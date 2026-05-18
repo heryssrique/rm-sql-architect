@@ -590,7 +590,10 @@ function calculateJoins(baseTable, selectedTables) {
         
         let condition = "";
         
-        if (table === "PPESSOA") {
+        if (rmSchema[table] && rmSchema[table].joinCondition) {
+            condition = rmSchema[table].joinCondition;
+        }
+        else if (table === "PPESSOA") {
             if (selectedTables.has("PFUNC")) {
                 condition = "PFUNC.CODPESSOA = PPESSOA.CODIGO";
             } else {
@@ -980,7 +983,8 @@ function highlightSQL(sql) {
         
     // Define patterns and replacement CSS styles
     const keywords = /\b(SELECT|FROM|INNER JOIN|LEFT JOIN|OUTER JOIN|RIGHT JOIN|ON|WHERE|AND|OR|AS|IN|NOLOCK|LIKE|IS NULL|IS NOT NULL|ORDER BY|GROUP BY)\b/gi;
-    const tables = /\b(PFUNC|PPESSOA|PSECAO|PFUNCAO|PFPERFF|PVALORES|PEVENTOS|PFDEPEND|PFHSTSAL)\b/g;
+    const tableKeys = Object.keys(rmSchema).join("|");
+    const tables = new RegExp(`\\b(${tableKeys})\\b`, "g");
     const parameters = /(:PLN_[A-Z0-9_]+|:[A-Z0-9_]+)/g;
     const comments = /(--.*$)/gm;
     const strings = /('[^']*')/g;
@@ -1153,8 +1157,226 @@ cbAutoJoin.addEventListener("change", (e) => {
     generateSQL();
 });
 
+// 9. NEW TABLE MODAL & REGISTRATION LOGIC
+const newTableModal = document.getElementById("new-table-modal");
+const btnNewTable = document.getElementById("btn-new-table");
+const closeNewTableBtns = document.querySelectorAll(".close-new-table-btn");
+const btnAddModalField = document.getElementById("btn-add-modal-field");
+const modalFieldsList = document.getElementById("modal-fields-list");
+const btnSaveTable = document.getElementById("btn-save-table");
+const newTableForm = document.getElementById("new-table-form");
+
+btnNewTable.addEventListener("click", () => {
+    newTableForm.reset();
+    modalFieldsList.innerHTML = "";
+    
+    // Default standard fields for RM Labore tables
+    addModalFieldRow("CODCOLIGADA", "Código da Coligada", "smallint");
+    addModalFieldRow("CHAPA", "Chapa do Funcionário", "varchar");
+    
+    const codeInput = document.getElementById("new-table-code");
+    const joinInput = document.getElementById("new-table-join");
+    
+    codeInput.oninput = (e) => {
+        const val = e.target.value.toUpperCase().replace(/\s/g, "");
+        joinInput.value = `PFUNC.CODCOLIGADA = ${val}.CODCOLIGADA AND PFUNC.CHAPA = ${val}.CHAPA`;
+    };
+    
+    newTableModal.classList.add("show");
+});
+
+closeNewTableBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+        newTableModal.classList.remove("show");
+    });
+});
+
+function addModalFieldRow(name = "", desc = "", type = "varchar") {
+    const row = document.createElement("div");
+    row.className = "modal-field-row";
+    row.style.display = "grid";
+    row.style.gridTemplateColumns = "1.5fr 2fr 1fr auto";
+    row.style.gap = "8px";
+    row.style.alignItems = "center";
+    row.style.background = "rgba(255, 255, 255, 0.02)";
+    row.style.border = "1px solid var(--border-color)";
+    row.style.padding = "8px";
+    row.style.borderRadius = "6px";
+    row.style.marginBottom = "6px";
+    
+    // Name input
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.placeholder = "Ex: CODTIPO";
+    nameInput.value = name;
+    nameInput.required = true;
+    nameInput.className = "m-field-name";
+    nameInput.style.background = "var(--bg-input)";
+    nameInput.style.border = "1px solid var(--border-color)";
+    nameInput.style.color = "var(--text-main)";
+    nameInput.style.fontFamily = "var(--font-mono)";
+    nameInput.style.fontSize = "0.75rem";
+    nameInput.style.padding = "5px 8px";
+    nameInput.style.borderRadius = "4px";
+    nameInput.style.outline = "none";
+    nameInput.style.textTransform = "uppercase";
+    
+    // Desc input
+    const descInput = document.createElement("input");
+    descInput.type = "text";
+    descInput.placeholder = "Ex: Tipo de Contrato";
+    descInput.value = desc;
+    descInput.required = true;
+    descInput.className = "m-field-desc";
+    descInput.style.background = "var(--bg-input)";
+    descInput.style.border = "1px solid var(--border-color)";
+    descInput.style.color = "var(--text-main)";
+    descInput.style.fontFamily = "var(--font-sans)";
+    descInput.style.fontSize = "0.75rem";
+    descInput.style.padding = "5px 8px";
+    descInput.style.borderRadius = "4px";
+    descInput.style.outline = "none";
+    
+    // Type selector
+    const typeSelect = document.createElement("select");
+    typeSelect.className = "m-field-type";
+    typeSelect.style.background = "var(--bg-input)";
+    typeSelect.style.border = "1px solid var(--border-color)";
+    typeSelect.style.color = "var(--text-main)";
+    typeSelect.style.fontSize = "0.75rem";
+    typeSelect.style.padding = "5px 8px";
+    typeSelect.style.borderRadius = "4px";
+    typeSelect.style.outline = "none";
+    typeSelect.style.cursor = "pointer";
+    
+    const types = ["varchar", "int", "numeric", "datetime", "char", "smallint"];
+    types.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t.toUpperCase();
+        if (t === type) opt.selected = true;
+        typeSelect.appendChild(opt);
+    });
+    
+    // Remove button
+    const delBtn = document.createElement("button");
+    delBtn.type = "button";
+    delBtn.style.background = "transparent";
+    delBtn.style.border = "none";
+    delBtn.style.color = "var(--accent-red)";
+    delBtn.style.cursor = "pointer";
+    delBtn.style.padding = "5px";
+    delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+    delBtn.addEventListener("click", () => {
+        row.remove();
+    });
+    
+    row.appendChild(nameInput);
+    row.appendChild(descInput);
+    row.appendChild(typeSelect);
+    row.appendChild(delBtn);
+    
+    modalFieldsList.appendChild(row);
+}
+
+btnAddModalField.addEventListener("click", () => {
+    addModalFieldRow();
+});
+
+btnSaveTable.addEventListener("click", () => {
+    const tableCode = document.getElementById("new-table-code").value.trim().toUpperCase().replace(/\s/g, "");
+    const tableDesc = document.getElementById("new-table-desc").value.trim();
+    const tablePriority = parseInt(document.getElementById("new-table-priority").value, 10);
+    const tableJoin = document.getElementById("new-table-join").value.trim();
+    
+    if (!tableCode || !tableDesc || !tableJoin) {
+        showToast("Por favor, preencha todos os campos da tabela!", "info");
+        return;
+    }
+    
+    if (rmSchema[tableCode]) {
+        showToast(`A tabela ${tableCode} já existe no sistema!`, "info");
+        return;
+    }
+    
+    const fieldRows = modalFieldsList.querySelectorAll(".modal-field-row");
+    if (fieldRows.length === 0) {
+        showToast("Adicione pelo menos 1 campo na tabela!", "info");
+        return;
+    }
+    
+    const fieldsObj = {};
+    let hasError = false;
+    
+    fieldRows.forEach(row => {
+        const fName = row.querySelector(".m-field-name").value.trim().toUpperCase().replace(/\s/g, "");
+        const fDesc = row.querySelector(".m-field-desc").value.trim();
+        const fType = row.querySelector(".m-field-type").value;
+        
+        if (!fName || !fDesc) {
+            hasError = true;
+            return;
+        }
+        
+        fieldsObj[fName] = {
+            desc: fDesc,
+            type: fType,
+            selected: true // By default, newly registered table fields are marked checked
+        };
+    });
+    
+    if (hasError) {
+        showToast("Preencha todos os nomes e descrições dos campos!", "info");
+        return;
+    }
+    
+    // Register in memory
+    rmSchema[tableCode] = {
+        code: tableCode,
+        desc: tableDesc,
+        priority: tablePriority,
+        joinCondition: tableJoin,
+        fields: fieldsObj
+    };
+    
+    // Sync to localStorage
+    const stored = localStorage.getItem("rm_custom_schemas");
+    const custom = stored ? JSON.parse(stored) : {};
+    custom[tableCode] = rmSchema[tableCode];
+    localStorage.setItem("rm_custom_schemas", JSON.stringify(custom));
+    
+    // Auto select table
+    activeTables.add(tableCode);
+    
+    // Close modal
+    newTableModal.classList.remove("show");
+    
+    // Refresh UI and SQL
+    initTablesAccordion();
+    updateActiveTablesUI();
+    generateSQL();
+    
+    showToast(`Tabela ${tableCode} cadastrada e selecionada!`, "success");
+});
+
+function loadCustomSchemas() {
+    const stored = localStorage.getItem("rm_custom_schemas");
+    if (stored) {
+        try {
+            const custom = JSON.parse(stored);
+            Object.keys(custom).forEach(tKey => {
+                rmSchema[tKey] = custom[tKey];
+            });
+        } catch(e) {
+            console.error("Erro ao carregar esquemas customizados:", e);
+        }
+    }
+}
+
 // Main Initializer
 function init() {
+    loadCustomSchemas();
+    
     // Set base active tables to PFUNC and PPESSOA by default
     activeTables.add("PFUNC");
     activeTables.add("PPESSOA");

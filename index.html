@@ -58,9 +58,15 @@
                 <div class="tab-content-container">
                     <!-- TABLES TAB -->
                     <div class="tab-content active" id="tab-tables">
-                        <div class="search-box">
+                        <div class="search-box" style="margin-bottom: 0.75rem;">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="table-search" placeholder="Buscar tabela ou campo...">
+                        </div>
+                        
+                        <div class="sidebar-actions" style="margin-bottom: 1rem;">
+                            <button class="btn btn-sm btn-primary" id="btn-new-table" style="width: 100%; justify-content: center; gap: 8px;">
+                                <i class="fa-solid fa-circle-plus"></i> Cadastrar Nova Tabela
+                            </button>
                         </div>
                         
                         <div class="tables-accordion" id="tables-list">
@@ -225,6 +231,67 @@
                     <li><code>:PLN_CHAPA</code>: Chapa do funcionário selecionado em relatórios ou fórmulas.</li>
                     <li><code>:PLN_MESCOMP</code> e <code>:PLN_ANOCOMP</code>: Competência ativa do RM.</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA CADASTRAR NOVA TABELA -->
+    <div id="new-table-modal" class="modal">
+        <div class="modal-content" style="max-width: 720px;">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-table-columns"></i> Cadastrar Nova Tabela RM</h2>
+                <span class="close-new-table-btn" style="color: var(--text-muted); font-size: 1.5rem; font-weight: 700; cursor: pointer;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="new-table-form" onsubmit="return false;">
+                    <div class="form-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="new-table-code" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Código da Tabela (Físico):</label>
+                            <input type="text" id="new-table-code" placeholder="Ex: PPRAZO" required style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-mono); font-size: 0.8rem; padding: 8px 12px; border-radius: 6px; outline: none; text-transform: uppercase;">
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="new-table-desc" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Descrição da Tabela:</label>
+                            <input type="text" id="new-table-desc" placeholder="Ex: Histórico de Contratos de Trabalho" required style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-sans); font-size: 0.8rem; padding: 8px 12px; border-radius: 6px; outline: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="new-table-priority" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Prioridade (Join):</label>
+                            <select id="new-table-priority" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-sans); font-size: 0.8rem; padding: 8px 12px; border-radius: 6px; outline: none; cursor: pointer;">
+                                <option value="10">10 (Tabela Principal / Contratos)</option>
+                                <option value="8">8 (Dados Gerais de Pessoa)</option>
+                                <option value="6">6 (Dicionários Médios)</option>
+                                <option value="4" selected>4 (Históricos / Detalhes)</option>
+                                <option value="2">2 (Tabelas Acessórias / Parâmetros)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="new-table-join" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Condição de JOIN Automático (Relacionamento):</label>
+                            <input type="text" id="new-table-join" placeholder="Ex: PFUNC.CODCOLIGADA = PPRAZO.CODCOLIGADA AND PFUNC.CHAPA = PPRAZO.CHAPA" required style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-mono); font-size: 0.8rem; padding: 8px 12px; border-radius: 6px; outline: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="fields-section" style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 6px;">
+                            <h3 style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Campos da Tabela</h3>
+                            <button class="btn btn-sm btn-outline" id="btn-add-modal-field" type="button">
+                                <i class="fa-solid fa-plus"></i> Adicionar Campo
+                            </button>
+                        </div>
+                        
+                        <div id="modal-fields-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; padding-right: 5px;">
+                            <!-- Dynamically generated rows of fields inside modal -->
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <button class="btn btn-outline close-new-table-btn" type="button">Cancelar</button>
+                        <button class="btn btn-success" id="btn-save-table" type="button">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar Tabela
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

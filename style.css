@@ -1120,7 +1120,7 @@ body {
     color: var(--accent-cyan);
 }
 
-.close-btn {
+.close-btn, .close-new-table-btn {
     color: var(--text-muted);
     font-size: 1.5rem;
     font-weight: 700;
@@ -1128,7 +1128,7 @@ body {
     transition: color 0.15s ease;
 }
 
-.close-btn:hover {
+.close-btn:hover, .close-new-table-btn:hover {
     color: var(--text-main);
 }
 
