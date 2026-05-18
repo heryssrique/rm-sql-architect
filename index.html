@@ -120,22 +120,29 @@
                     </div>
                     <div class="panel-content">
                         <div class="quick-filters">
-                            <h3>Filtros Comuns (RM Labore)</h3>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h3>Filtros Comuns (RM Labore)</h3>
+                                <label class="custom-checkbox" style="background: rgba(46, 204, 113, 0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(46, 204, 113, 0.15);">
+                                    <input type="checkbox" id="mode-planilha-net">
+                                    <span class="checkmark" style="border-color: var(--accent-green);"></span>
+                                    <span class="label-text" style="color: var(--accent-green); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px;">Modo Planilha .NET</span>
+                                </label>
+                            </div>
                             <div class="quick-filters-grid">
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="filter-active-employees" checked>
                                     <span class="checkmark"></span>
-                                    <span class="label-text" title="Filtra apenas funcionários que não foram demitidos (Situação <> 'D')">Apenas Ativos (PFUNC.CODSITUACAO &lt;&gt; 'D')</span>
+                                    <span class="label-text" id="lbl-filter-active" title="Filtra apenas funcionários que não foram demitidos (Situação <> 'D')">Apenas Ativos (PFUNC.CODSITUACAO &lt;&gt; 'D')</span>
                                 </label>
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="filter-coligada-context">
                                     <span class="checkmark"></span>
-                                    <span class="label-text" title="Utiliza o parâmetro de coligada do contexto do RM (:PLN_CODCOLIGADA)">Parâmetro de Coligada (:PLN_CODCOLIGADA)</span>
+                                    <span class="label-text" id="lbl-filter-coligada" title="Utiliza o parâmetro de coligada do contexto do RM (:PLN_CODCOLIGADA)">Parâmetro de Coligada (:PLN_CODCOLIGADA)</span>
                                 </label>
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="filter-chapa-param">
                                     <span class="checkmark"></span>
-                                    <span class="label-text" title="Adiciona filtro pela chapa em execução (:PLN_CHAPA)">Parâmetro de Chapa (:PLN_CHAPA)</span>
+                                    <span class="label-text" id="lbl-filter-chapa" title="Adiciona filtro pela chapa em execução (:PLN_CHAPA)">Parâmetro de Chapa (:PLN_CHAPA)</span>
                                 </label>
                             </div>
                         </div>
@@ -191,6 +198,34 @@
                             <button class="btn btn-accent" id="btn-export-xml">
                                 <i class="fa-solid fa-file-code"></i> Exportar XML (RM)
                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLANILHA .NET INTEGRATION HELPER PANEL -->
+                <div class="panel planilha-net-panel" id="planilha-net-helper" style="display: none; border-top: 2px solid var(--accent-green); transition: all 0.3s ease; margin-top: 20px;">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-file-excel" style="color: var(--accent-green);"></i> Integração e Mapeamento Planilha .NET</h2>
+                        <span class="badge success" style="background: rgba(46, 204, 113, 0.15); color: var(--accent-green); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Modo Planilha .NET Ativo</span>
+                    </div>
+                    <div class="panel-content">
+                        <div class="planilha-net-guide-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 25px; padding: 5px 0;">
+                            <div class="guide-column" style="display: flex; flex-direction: column; gap: 10px;">
+                                <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">Como Associar à Célula do RM</h3>
+                                <ol style="font-size: 0.78rem; line-height: 1.6; color: var(--text-main); padding-left: 18px; display: flex; flex-direction: column; gap: 10px; margin: 0;">
+                                    <li>Copie o código SQL gerado acima e cadastre-o em <strong>Gestão > Consultas SQL</strong>.</li>
+                                    <li>No TOTVS RM, abra sua planilha em <strong>Gestão > Ferramentas > Planilha .NET</strong>.</li>
+                                    <li>Selecione a célula onde deseja carregar os resultados da consulta.</li>
+                                    <li>Acesse a aba <strong>Desenvolvedor / Ferramentas > Associar Consulta SQL à Célula</strong>.</li>
+                                    <li>Selecione a consulta cadastrada. O RM reconhecerá os parâmetros tipados automáticamente.</li>
+                                </ol>
+                            </div>
+                            <div class="guide-column" style="display: flex; flex-direction: column; gap: 10px;">
+                                <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">Mapeamento de Células de Parâmetros</h3>
+                                <div id="planilha-net-param-mapping" style="display: flex; flex-direction: column; gap: 8px;">
+                                    <!-- Populated dynamically by JS -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

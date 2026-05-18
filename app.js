@@ -363,6 +363,12 @@ const cbFilterColigada = document.getElementById("filter-coligada-context");
 const cbFilterChapa = document.getElementById("filter-chapa-param");
 const cbAutoJoin = document.getElementById("auto-join");
 
+// Planilha .NET DOM Elements
+const modePlanilhaNet = document.getElementById("mode-planilha-net");
+const lblFilterColigada = document.getElementById("lbl-filter-coligada");
+const lblFilterChapa = document.getElementById("lbl-filter-chapa");
+const planilhaNetHelper = document.getElementById("planilha-net-helper");
+
 // Toast Notification
 function showToast(message, type = "success") {
     const toast = document.getElementById("toast");
@@ -979,6 +985,102 @@ function renderCustomFiltersList() {
     });
 }
 
+function updatePlanilhaNetMapping() {
+    const mappingContainer = document.getElementById("planilha-net-param-mapping");
+    if (!mappingContainer) return;
+    
+    mappingContainer.innerHTML = "";
+    
+    const params = [];
+    
+    if (cbFilterColigada.checked) {
+        params.push({
+            name: ":CODCOLIGADA_N",
+            type: "Numérico (Coligada)",
+            desc: "Identifica a Coligada ativa (ex: associar à célula A1 da Planilha .NET)."
+        });
+    }
+    
+    if (cbFilterChapa.checked && activeTables.has("PFUNC")) {
+        params.push({
+            name: ":CHAPA_S",
+            type: "Alfanumérico (Matrícula)",
+            desc: "Identifica a Chapa do Funcionário (ex: associar à célula B1 da Planilha .NET)."
+        });
+    }
+    
+    // Check if custom filters contain any parameter
+    customFilters.forEach(f => {
+        if (f.value.startsWith(":")) {
+            const paramName = f.value;
+            let typeName = "Alfanumérico (Texto)";
+            if (paramName.endsWith("_N")) typeName = "Numérico (Inteiro)";
+            else if (paramName.endsWith("_V")) typeName = "Numérico (Decimal)";
+            else if (paramName.endsWith("_D")) typeName = "Data/Hora";
+            
+            if (!params.some(p => p.name === paramName)) {
+                params.push({
+                    name: paramName,
+                    type: typeName,
+                    desc: `Filtro customizado para o campo ${f.table}.${f.field} (associar à célula correspondente).`
+                });
+            }
+        }
+    });
+    
+    if (params.length === 0) {
+        mappingContainer.innerHTML = `
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--border-color); border-radius: 6px; padding: 12px; text-align: center; color: var(--text-muted); font-size: 0.75rem;">
+                Nenhum parâmetro dinâmico mapeado. Ative "Parâmetro de Coligada" ou "Parâmetro de Chapa" acima para ver o mapeamento.
+            </div>
+        `;
+        return;
+    }
+    
+    params.forEach(p => {
+        const item = document.createElement("div");
+        item.style.display = "flex";
+        item.style.flexDirection = "column";
+        item.style.gap = "4px";
+        item.style.background = "rgba(255, 255, 255, 0.02)";
+        item.style.border = "1px solid var(--border-color)";
+        item.style.borderRadius = "6px";
+        item.style.padding = "8px 12px";
+        
+        const header = document.createElement("div");
+        header.style.display = "flex";
+        header.style.justifyContent = "space-between";
+        header.style.alignItems = "center";
+        
+        const nameSpan = document.createElement("span");
+        nameSpan.style.fontFamily = "var(--font-mono)";
+        nameSpan.style.fontSize = "0.75rem";
+        nameSpan.style.fontWeight = "700";
+        nameSpan.style.color = "var(--accent-green)";
+        nameSpan.textContent = p.name;
+        
+        const typeBadge = document.createElement("span");
+        typeBadge.style.fontSize = "0.65rem";
+        typeBadge.style.fontWeight = "600";
+        typeBadge.style.textTransform = "uppercase";
+        typeBadge.style.color = "var(--text-muted)";
+        typeBadge.textContent = p.type;
+        
+        header.appendChild(nameSpan);
+        header.appendChild(typeBadge);
+        
+        const descP = document.createElement("p");
+        descP.style.fontSize = "0.72rem";
+        descP.style.color = "var(--text-main)";
+        descP.style.margin = "0";
+        descP.textContent = p.desc;
+        
+        item.appendChild(header);
+        item.appendChild(descP);
+        mappingContainer.appendChild(item);
+    });
+}
+
 // 7. SQL QUERY GENERATOR ENGINE
 function generateSQL() {
     if (activeTables.size === 0) {
@@ -1035,20 +1137,22 @@ function generateSQL() {
     
     // Coligada Context Parameter
     if (cbFilterColigada.checked) {
+        const colParam = modePlanilhaNet.checked ? ":CODCOLIGADA_N" : ":PLN_CODCOLIGADA";
         if (activeTables.has("PFUNC")) {
-            whereClauses.push("PFUNC.CODCOLIGADA = :PLN_CODCOLIGADA");
+            whereClauses.push(`PFUNC.CODCOLIGADA = ${colParam}`);
         } else if (activeTables.has("PFPERFF")) {
-            whereClauses.push("PFPERFF.CODCOLIGADA = :PLN_CODCOLIGADA");
+            whereClauses.push(`PFPERFF.CODCOLIGADA = ${colParam}`);
         } else if (activeTables.has("PSECAO")) {
-            whereClauses.push("PSECAO.CODCOLIGADA = :PLN_CODCOLIGADA");
+            whereClauses.push(`PSECAO.CODCOLIGADA = ${colParam}`);
         } else if (activeTables.has("PFUNCAO")) {
-            whereClauses.push("PFUNCAO.CODCOLIGADA = :PLN_CODCOLIGADA");
+            whereClauses.push(`PFUNCAO.CODCOLIGADA = ${colParam}`);
         }
     }
     
     // Chapa parameter
     if (cbFilterChapa.checked && activeTables.has("PFUNC")) {
-        whereClauses.push("PFUNC.CHAPA = :PLN_CHAPA");
+        const chapaParam = modePlanilhaNet.checked ? ":CHAPA_S" : ":PLN_CHAPA";
+        whereClauses.push(`PFUNC.CHAPA = ${chapaParam}`);
     }
     
     // Custom filters
@@ -1073,6 +1177,9 @@ function generateSQL() {
     
     // Render highlighted HTML
     sqlHighlighted.innerHTML = highlightSQL(fullSQL);
+    
+    // Planilha .NET mapping update
+    updatePlanilhaNetMapping();
 }
 
 // SQL syntax highlighter matching token regex
@@ -1256,6 +1363,24 @@ cbFilterColigada.addEventListener("change", generateSQL);
 cbFilterChapa.addEventListener("change", generateSQL);
 cbAutoJoin.addEventListener("change", (e) => {
     updateActiveTablesUI();
+    generateSQL();
+});
+
+modePlanilhaNet.addEventListener("change", (e) => {
+    const active = e.target.checked;
+    if (active) {
+        lblFilterColigada.textContent = "Parâmetro :CODCOLIGADA_N";
+        lblFilterColigada.title = "Formata o parâmetro para Planilha .NET como numérico (:CODCOLIGADA_N)";
+        lblFilterChapa.textContent = "Parâmetro :CHAPA_S";
+        lblFilterChapa.title = "Formata o parâmetro para Planilha .NET como alfanumérico (:CHAPA_S)";
+        planilhaNetHelper.style.display = "block";
+    } else {
+        lblFilterColigada.textContent = "Parâmetro de Coligada (:PLN_CODCOLIGADA)";
+        lblFilterColigada.title = "Utiliza o parâmetro de coligada do contexto do RM (:PLN_CODCOLIGADA)";
+        lblFilterChapa.textContent = "Parâmetro de Chapa (:PLN_CHAPA)";
+        lblFilterChapa.title = "Adiciona filtro pela chapa em execução (:PLN_CHAPA)";
+        planilhaNetHelper.style.display = "none";
+    }
     generateSQL();
 });
 
