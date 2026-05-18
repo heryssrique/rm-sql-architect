@@ -1461,6 +1461,124 @@ btnSaveTable.addEventListener("click", () => {
     showToast(`Tabela ${tableCode} cadastrada e selecionada!`, "success");
 });
 
+// 10. CUSTOM TEMPLATES LOGIC
+const btnSaveAsTemplate = document.getElementById("btn-save-as-template");
+const saveTemplateModal = document.getElementById("save-template-modal");
+const closeSaveTemplateBtns = document.querySelectorAll(".close-save-template-btn");
+const btnSubmitSaveTemplate = document.getElementById("btn-submit-save-template");
+const saveTemplateForm = document.getElementById("save-template-form");
+
+btnSaveAsTemplate.addEventListener("click", () => {
+    if (activeTables.size === 0) {
+        showToast("Selecione pelo menos 1 tabela e alguns campos para poder salvar como modelo!", "info");
+        return;
+    }
+    
+    // Auto populate defaults
+    saveTemplateForm.reset();
+    document.getElementById("new-template-title").value = queryXmlTitle !== "Consulta Customizada RM Labore" ? queryXmlTitle : "";
+    
+    saveTemplateModal.classList.add("show");
+});
+
+closeSaveTemplateBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+        saveTemplateModal.classList.remove("show");
+    });
+});
+
+btnSubmitSaveTemplate.addEventListener("click", () => {
+    const title = document.getElementById("new-template-title").value.trim();
+    const desc = document.getElementById("new-template-desc").value.trim();
+    
+    if (!title || !desc) {
+        showToast("Preencha o título e a descrição do modelo!", "info");
+        return;
+    }
+    
+    const id = title.toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // remove accents
+        .replace(/[^a-z0-9\s-]/g, "") // remove special chars
+        .replace(/\s+/g, "-") // replace spaces with dash
+        .replace(/-+/g, "-"); // merge multiple dashes
+        
+    // Extract currently selected fields from memory
+    const selectedFields = {};
+    activeTables.forEach(tKey => {
+        const fields = [];
+        Object.keys(rmSchema[tKey].fields).forEach(fKey => {
+            if (rmSchema[tKey].fields[fKey].selected) {
+                fields.push(fKey);
+            }
+        });
+        selectedFields[tKey] = fields;
+    });
+    
+    // Extract filters
+    const filters = [];
+    customFilters.forEach(f => {
+        filters.push({
+            table: f.table,
+            field: f.field,
+            op: f.op,
+            value: f.value,
+            type: "custom"
+        });
+    });
+    
+    const newTemplate = {
+        id: id,
+        title: title,
+        desc: desc,
+        tables: Array.from(activeTables),
+        selectedFields: selectedFields,
+        filters: filters,
+        activeFilters: {
+            active: cbFilterActive.checked,
+            coligada: cbFilterColigada.checked,
+            chapa: cbFilterChapa.checked
+        }
+    };
+    
+    // Add to sqlTemplates
+    sqlTemplates.push(newTemplate);
+    
+    // Save to localStorage
+    const stored = localStorage.getItem("rm_custom_templates");
+    const customList = stored ? JSON.parse(stored) : [];
+    // Prevent duplicate ids in localStorage
+    const filtered = customList.filter(t => t.id !== id);
+    filtered.push(newTemplate);
+    localStorage.setItem("rm_custom_templates", JSON.stringify(filtered));
+    
+    // Close modal
+    saveTemplateModal.classList.remove("show");
+    
+    // Re-render templates list
+    initTemplates();
+    
+    showToast(`Modelo "${title}" salvo com sucesso!`, "success");
+});
+
+function loadCustomTemplates() {
+    const stored = localStorage.getItem("rm_custom_templates");
+    if (stored) {
+        try {
+            const custom = JSON.parse(stored);
+            if (Array.isArray(custom)) {
+                custom.forEach(tpl => {
+                    if (!sqlTemplates.some(t => t.id === tpl.id)) {
+                        sqlTemplates.push(tpl);
+                    }
+                });
+            }
+        } catch(e) {
+            console.error("Erro ao carregar modelos customizados:", e);
+        }
+    }
+}
+
 function loadCustomSchemas() {
     const stored = localStorage.getItem("rm_custom_schemas");
     if (stored) {
@@ -1478,6 +1596,7 @@ function loadCustomSchemas() {
 // Main Initializer
 function init() {
     loadCustomSchemas();
+    loadCustomTemplates();
     
     // Set base active tables to PFUNC and PPESSOA by default
     activeTables.add("PFUNC");
