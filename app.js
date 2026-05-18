@@ -137,6 +137,32 @@ const rmSchema = {
             MOTIVO: { desc: "Motivo da Alteração", type: "varchar", selected: true },
             CODFUNCAO: { desc: "Código da Função", type: "varchar", selected: false }
         }
+    },
+    PFHSTAFDT: {
+        code: "PFHSTAFDT",
+        desc: "Histórico de Afastamentos Temporários",
+        priority: 2,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
+            DTINICIO: { desc: "Data de Início do Afastamento", type: "datetime", selected: true },
+            DTFIM: { desc: "Data de Término do Afastamento", type: "datetime", selected: true },
+            TIPO: { desc: "Tipo do Afastamento", type: "char", selected: true },
+            MOTIVO: { desc: "Motivo do Afastamento", type: "varchar", selected: true }
+        }
+    },
+    PFERIAS: {
+        code: "PFERIAS",
+        desc: "Histórico de Férias e Gozos",
+        priority: 2,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
+            FIMPERAQUIS: { desc: "Fim do Período Aquisitivo", type: "datetime", selected: true },
+            INICIOGOZO: { desc: "Data de Início do Gozo", type: "datetime", selected: true },
+            FIMGOZO: { desc: "Data de Término do Gozo", type: "datetime", selected: true },
+            DIASGOZO: { desc: "Dias de Férias Gozados", type: "smallint", selected: true }
+        }
     }
 };
 
@@ -235,6 +261,72 @@ const sqlTemplates = [
             PFHSTSAL: ["DTMUDANCA", "SALARIO", "MOTIVO"]
         },
         filters: [],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "estagiarios-aprendizes",
+        title: "Estagiários e Aprendizes Ativos",
+        desc: "Filtra colaboradores ativos contratados sob os regimes de Estágio ou Aprendizagem, contendo informações básicas e salário.",
+        tables: ["PFUNC", "PPESSOA", "PSECAO", "PFUNCAO"],
+        selectedFields: {
+            PFUNC: ["CODCOLIGADA", "CHAPA", "CODTIPO", "SALARIO", "DATAADMISSAO"],
+            PPESSOA: ["NOME", "CPF"],
+            PSECAO: ["DESCRICAO"],
+            PFUNCAO: ["NOME"]
+        },
+        filters: [
+            { table: "PFUNC", field: "CODSITUACAO", op: "<>", value: "'D'", type: "static" },
+            { table: "PFUNC", field: "CODTIPO", op: "IN", value: "('E', 'A')", type: "custom" }
+        ],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "auditoria-bases",
+        title: "Bases de FGTS / INSS (Ficha Financeira)",
+        desc: "Relatório para auditar as verbas de natureza Base de Cálculo ('B') geradas no período para os funcionários.",
+        tables: ["PFUNC", "PPESSOA", "PFPERFF", "PVALORES", "PEVENTOS"],
+        selectedFields: {
+            PFUNC: ["CODCOLIGADA", "CHAPA"],
+            PPESSOA: ["NOME"],
+            PFPERFF: ["ANOCOMP", "MESCOMP"],
+            PVALORES: ["VALOR"],
+            PEVENTOS: ["CODIGO", "DESCRICAO", "PROVENTODESCONTO"]
+        },
+        filters: [
+            { table: "PFPERFF", field: "ANOCOMP", op: "=", value: "2026", type: "custom" },
+            { table: "PFPERFF", field: "MESCOMP", op: "=", value: "5", type: "custom" },
+            { table: "PEVENTOS", field: "PROVENTODESCONTO", op: "=", value: "'B'", type: "custom" }
+        ],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "historico-afastamentos",
+        title: "Histórico de Afastamentos Ativos",
+        desc: "Relação de todos os afastamentos ativos (sem data de término cadastrada) contendo chapa, nome e motivo do afastamento.",
+        tables: ["PFUNC", "PPESSOA", "PFHSTAFDT"],
+        selectedFields: {
+            PFUNC: ["CHAPA"],
+            PPESSOA: ["NOME"],
+            PFHSTAFDT: ["DTINICIO", "DTFIM", "TIPO", "MOTIVO"]
+        },
+        filters: [
+            { table: "PFHSTAFDT", field: "DTFIM", op: "IS NULL", value: "", type: "custom" }
+        ],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "historico-ferias",
+        title: "Períodos de Férias Gozados",
+        desc: "Histórico completo de gozo de férias por colaborador contendo início, fim e quantidade de dias gozados.",
+        tables: ["PFUNC", "PPESSOA", "PFERIAS"],
+        selectedFields: {
+            PFUNC: ["CHAPA"],
+            PPESSOA: ["NOME"],
+            PFERIAS: ["FIMPERAQUIS", "INICIOGOZO", "FIMGOZO", "DIASGOZO"]
+        },
+        filters: [
+            { table: "PFERIAS", field: "INICIOGOZO", op: ">=", value: "'2026-01-01'", type: "custom" }
+        ],
         activeFilters: { active: true, coligada: true, chapa: false }
     }
 ];
@@ -641,6 +733,16 @@ function calculateJoins(baseTable, selectedTables) {
         else if (table === "PFHSTSAL") {
             if (selectedTables.has("PFUNC")) {
                 condition = "PFUNC.CODCOLIGADA = PFHSTSAL.CODCOLIGADA AND PFUNC.CHAPA = PFHSTSAL.CHAPA";
+            }
+        }
+        else if (table === "PFHSTAFDT") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = PFHSTAFDT.CODCOLIGADA AND PFUNC.CHAPA = PFHSTAFDT.CHAPA";
+            }
+        }
+        else if (table === "PFERIAS") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = PFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFERIAS.CHAPA";
             }
         }
         
