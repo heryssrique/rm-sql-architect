@@ -163,6 +163,196 @@ const rmSchema = {
             FIMGOZO: { desc: "Data de Término do Gozo", type: "datetime", selected: true },
             DIASGOZO: { desc: "Dias de Férias Gozados", type: "smallint", selected: true }
         }
+    },
+    PFHSTHOR: {
+        code: "PFHSTHOR",
+        desc: "Histórico de Horários (Ponto)",
+        priority: 4,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            DTMUDANCA: { desc: "Data de Mudança", type: "datetime", selected: true },
+            CODHORARIO: { desc: "Código do Horário", type: "varchar", selected: true }
+        }
+    },
+    AHORARIO: {
+        code: "AHORARIO",
+        desc: "Cadastro de Horários (Escalas)",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CODIGO: { desc: "Código do Horário", type: "varchar", selected: true },
+            DESCRICAO: { desc: "Descrição do Horário", type: "varchar", selected: true },
+            MINUTOSJORNADA: { desc: "Minutos de Jornada Diária", type: "int", selected: false }
+        }
+    },
+    ABATFUN: {
+        code: "ABATFUN",
+        desc: "Batidas Realizadas (Marcações)",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
+            DATA: { desc: "Data da Batida", type: "datetime", selected: true },
+            BATIDA: { desc: "Hora da Batida (Minutos)", type: "int", selected: true },
+            NATUREZA: { desc: "Natureza (E/S)", type: "char", selected: false }
+        }
+    },
+    AMOVFUN: {
+        code: "AMOVFUN",
+        desc: "Movimento Apurado do Ponto",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
+            DATA: { desc: "Data da Apuração", type: "datetime", selected: true },
+            FALTA: { desc: "Minutos de Faltas", type: "int", selected: true },
+            ATRASO: { desc: "Minutos de Atraso", type: "int", selected: true },
+            EXTRA: { desc: "Minutos de Horas Extras", type: "int", selected: true },
+            ADICIONAL: { desc: "Minutos de Adicional Noturno", type: "int", selected: false }
+        }
+    },
+    ABANCOHORAS: {
+        code: "ABANCOHORAS",
+        desc: "Histórico e Saldos do Banco de Horas",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
+            DATA: { desc: "Data do Lançamento", type: "datetime", selected: true },
+            SALDO: { desc: "Saldo do Período (Minutos)", type: "int", selected: true },
+            SALDOANTERIOR: { desc: "Saldo Anterior (Minutos)", type: "int", selected: false }
+        }
+    },
+    AAFHTFUN: {
+        code: "AAFHTFUN",
+        desc: "Ficha de Ponto Calculada (Diário)",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
+            DATA: { desc: "Data de Referência", type: "datetime", selected: true },
+            BASE: { desc: "Minutos de Jornada Base", type: "int", selected: false },
+            HTRAB: { desc: "Minutos Trabalhados", type: "int", selected: false },
+            EXTRAAUTORIZADO: { desc: "Minutos Extras Autorizados", type: "int", selected: false },
+            ATRASO: { desc: "Minutos de Atraso", type: "int", selected: false },
+            FALTA: { desc: "Minutos de Falta", type: "int", selected: false },
+            ADICIONAL: { desc: "Minutos de Adicional Noturno", type: "int", selected: false },
+            FERIADO: { desc: "Feriado (0/1)", type: "smallint", selected: false },
+            COMPENSADO: { desc: "Compensado (0/1)", type: "smallint", selected: false },
+            DESCANSO: { desc: "Descanso/DSR (0/1)", type: "smallint", selected: false }
+        }
+    },
+    AAVISOCALCULADO: {
+        code: "AAVISOCALCULADO",
+        desc: "Avisos e Críticas do Ponto",
+        priority: 2,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            DATAREFERENCIA: { desc: "Data de Referência", type: "datetime", selected: true },
+            CODAVISO: { desc: "Código do Aviso (1=Interjornada, 2=Mais 10h...)", type: "smallint", selected: true }
+        }
+    },
+    ABANCOHORFUN: {
+        code: "ABANCOHORFUN",
+        desc: "Movimento Banco de Horas (Detalhado)",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            DATA: { desc: "Data do Movimento", type: "datetime", selected: true },
+            EXTRAFAIXA1: { desc: "Minutos Extras Faixa 1", type: "int", selected: false },
+            EXTRAFAIXA2: { desc: "Minutos Extras Faixa 2", type: "int", selected: false },
+            EXTRAFAIXA3: { desc: "Minutos Extras Faixa 3", type: "int", selected: false },
+            EXTRAFAIXA4: { desc: "Minutos Extras Faixa 4", type: "int", selected: false },
+            EXTRAFAIXA5: { desc: "Minutos Extras Faixa 5", type: "int", selected: false },
+            FALTA: { desc: "Minutos Faltas", type: "int", selected: false },
+            ATRASO: { desc: "Minutos Atraso", type: "int", selected: false }
+        }
+    },
+    AMOVFUNDIA: {
+        code: "AMOVFUNDIA",
+        desc: "Movimento Apurado Diário",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            DATA: { desc: "Data da Apuração", type: "datetime", selected: true },
+            CODEVE: { desc: "Código do Evento/Rubrica", type: "varchar", selected: true },
+            NUMHORAS: { desc: "Quantidade de Horas (Minutos)", type: "int", selected: true }
+        }
+    },
+    AJORNADAFUN: {
+        code: "AJORNADAFUN",
+        desc: "Histórico de Jornadas de Horários",
+        priority: 4,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            DATAMUDANCA: { desc: "Data de Mudança", type: "datetime", selected: true },
+            CODHORARIO: { desc: "Código do Horário", type: "varchar", selected: true }
+        }
+    },
+    AHORARIOJORNADA: {
+        code: "AHORARIOJORNADA",
+        desc: "Cadastro de Jornadas de Escala",
+        priority: 3,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CODHORARIO: { desc: "Código do Horário", type: "varchar", selected: true },
+            DESCRICAO: { desc: "Descrição da Jornada", type: "varchar", selected: true }
+        }
+    },
+    AJORHOR: {
+        code: "AJORHOR",
+        desc: "Cadastro de Batidas Previstas",
+        priority: 2,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CODHORARIO: { desc: "Código do Horário", type: "varchar", selected: false },
+            BATINICIO: { desc: "Hora da Batida (Minutos)", type: "int", selected: true },
+            INDINICIO: { desc: "Índice de Início/Sequência", type: "smallint", selected: false }
+        }
+    },
+    AOCORRENCIACALCULADA: {
+        code: "AOCORRENCIACALCULADA",
+        desc: "Ocorrências Diárias Calculadas",
+        priority: 2,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            DATAREFERENCIA: { desc: "Data de Referência", type: "datetime", selected: true },
+            INICIO: { desc: "Hora Início", type: "datetime", selected: false },
+            FIM: { desc: "Hora Fim", type: "datetime", selected: false },
+            TIPOOCORRENCIA: { desc: "Tipo de Ocorrência (T, AREF...)", type: "char", selected: true }
+        }
+    },
+    PSUBSTSUP: {
+        code: "PSUBSTSUP",
+        desc: "Substitutos de Supervisão",
+        priority: 1,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CODSECAO: { desc: "Código da Seção", type: "varchar", selected: false },
+            CODEQUIPE: { desc: "Código da Equipe", type: "varchar", selected: false },
+            CHAPASUBST: { desc: "Chapa do Substituto", type: "varchar", selected: true },
+            DATAINICIO: { desc: "Data Início", type: "datetime", selected: false },
+            DATAFIM: { desc: "Data Fim", type: "datetime", selected: false }
+        }
+    },
+    PSUBSTCHEFE: {
+        code: "PSUBSTCHEFE",
+        desc: "Substitutos de Chefia",
+        priority: 1,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CODCOLSUBST: { desc: "Código Coligada Substituto", type: "smallint", selected: false },
+            CODSECAO: { desc: "Código da Seção", type: "varchar", selected: false },
+            CHAPASUBST: { desc: "Chapa do Substituto", type: "varchar", selected: true },
+            DATAINICIO: { desc: "Data Início", type: "datetime", selected: false },
+            DATAFIM: { desc: "Data Fim", type: "datetime", selected: false }
+        }
     }
 };
 
@@ -328,6 +518,521 @@ const sqlTemplates = [
             { table: "PFERIAS", field: "INICIOGOZO", op: ">=", value: "'2026-01-01'", type: "custom" }
         ],
         activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "espelho-ponto",
+        title: "Espelho de Ponto (Movimentação Diária)",
+        desc: "Retorna o movimento diário apurado do ponto com faltas, atrasos e horas extras calculadas por funcionário.",
+        tables: ["PFUNC", "PPESSOA", "AMOVFUN"],
+        selectedFields: {
+            PFUNC: ["CODCOLIGADA", "CHAPA"],
+            PPESSOA: ["NOME"],
+            AMOVFUN: ["DATA", "FALTA", "ATRASO", "EXTRA"]
+        },
+        filters: [
+            { table: "AMOVFUN", field: "DATA", op: ">=", value: "'2026-05-01'", type: "custom" },
+            { table: "AMOVFUN", field: "DATA", op: "<=", value: "'2026-05-31'", type: "custom" }
+        ],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "historico-horarios",
+        title: "Histórico de Horários e Escalas",
+        desc: "Lista as mudanças históricas de horário de trabalho e escalas dos funcionários, vinculadas ao cadastro de horários.",
+        tables: ["PFUNC", "PPESSOA", "PFHSTHOR", "AHORARIO"],
+        selectedFields: {
+            PFUNC: ["CODCOLIGADA", "CHAPA"],
+            PPESSOA: ["NOME"],
+            PFHSTHOR: ["DTMUDANCA", "CODHORARIO"],
+            AHORARIO: ["DESCRICAO", "MINUTOSJORNADA"]
+        },
+        filters: [],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "extrato-banco-horas",
+        title: "Extrato de Banco de Horas",
+        desc: "Retorna o histórico de lançamentos e saldos acumulados de banco de horas por funcionário.",
+        tables: ["PFUNC", "PPESSOA", "ABANCOHORAS"],
+        selectedFields: {
+            PFUNC: ["CODCOLIGADA", "CHAPA"],
+            PPESSOA: ["NOME"],
+            ABANCOHORAS: ["DATA", "SALDO", "SALDOANTERIOR"]
+        },
+        filters: [],
+        activeFilters: { active: true, coligada: true, chapa: false }
+    },
+    {
+        id: "acompanhamento-ponto",
+        title: "Acompanhamento do Ponto Diário",
+        desc: "Relatório avançado de acompanhamento do ponto diário. Consolida jornada, faltas, atrasos, banco de horas, críticas de interjornada, trabalho acima de 10h, repouso de refeição e folga de 7 dias.",
+        tables: ["PFUNC", "PSECAO", "ABATFUN", "AMOVFUN", "ABANCOHORAS", "PEVENTOS", "AAFHTFUN", "AAVISOCALCULADO", "ABANCOHORFUN", "AMOVFUNDIA", "AJORNADAFUN", "AHORARIOJORNADA", "AJORHOR", "AOCORRENCIACALCULADA", "PSUBSTSUP", "PSUBSTCHEFE"],
+        selectedFields: {
+            PFUNC: ["CODCOLIGADA", "CHAPA", "NOME", "DATAADMISSAO", "CODTIPO", "CODSECAO"],
+            PSECAO: ["DESCRICAO"],
+            AAFHTFUN: ["DATA", "BASE", "HTRAB", "EXTRAAUTORIZADO", "ATRASO", "FALTA", "ADICIONAL"]
+        },
+        filters: [],
+        activeFilters: { active: false, coligada: true, chapa: false },
+        customSQL: `DECLARE @CODCOLIGADA INT = :$CODCOLIGADA
+DECLARE @DTINICIO DATETIME = :PLN_$B$1_D
+DECLARE @DTFIM DATETIME = :PLN_$B$2_D
+DECLARE @CRITICA VARCHAR(1) = :PLN_$B$3_S;
+
+WITH cte_HISTHOR AS
+	(
+	SELECT
+		PFHSTHOR.CODCOLIGADA,
+		PFHSTHOR.CHAPA,
+		PFHSTHOR.DTMUDANCA,
+		PFHSTHOR.CODHORARIO,
+		'H' TIPO
+	FROM PFHSTHOR
+	WHERE
+		PFHSTHOR.CODCOLIGADA = @CODCOLIGADA AND
+		PFHSTHOR.DTMUDANCA <= @DTFIM
+		
+	UNION ALL
+	
+	SELECT
+		AJORNADAFUN.CODCOLIGADA,
+		AJORNADAFUN.CHAPA,
+		AJORNADAFUN.DATAMUDANCA DTMUDANCA,
+		AJORNADAFUN.CODHORARIO,
+		'J' TIPO
+	FROM AJORNADAFUN
+	WHERE
+		AJORNADAFUN.CODCOLIGADA = @CODCOLIGADA AND
+		AJORNADAFUN.DATAMUDANCA <= @DTFIM
+	),
+	cte_BATIDAS AS
+	(
+	SELECT
+		T.CODCOLIGADA,
+		T.CHAPA,
+		T.DATAREFERENCIA,
+		T.BATIDA
+	FROM
+	(
+	SELECT
+		ABATFUN.CODCOLIGADA,
+		ABATFUN.CHAPA,
+		ABATFUN.DATAREFERENCIA,
+		ABATFUN.BATIDA,
+		ROW_NUMBER() OVER(PARTITION BY ABATFUN.CODCOLIGADA, ABATFUN.CHAPA, ABATFUN.DATAREFERENCIA ORDER BY ABATFUN.DATA, ABATFUN.BATIDA) SEQ
+	FROM ABATFUN
+	WHERE
+		ABATFUN.CODCOLIGADA = @CODCOLIGADA
+	) T
+	WHERE
+		SEQ = 1
+	),
+
+	cte_HORARIO AS
+	(
+	SELECT
+		AHORARIO.CODCOLIGADA,
+		AHORARIO.CODIGO AS CODHORARIO,
+		AHORARIO.DESCRICAO AS HORARIO,
+		(SELECT TOP 1
+			AJORHOR.BATINICIO
+		FROM AJORHOR
+		WHERE
+			AJORHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA AND
+			AJORHOR.CODHORARIO = AHORARIO.CODIGO 
+		ORDER BY
+			AJORHOR.INDINICIO,
+			AJORHOR.BATINICIO
+		) HORINICIO,
+		'H' TIPO
+	FROM AHORARIO
+	WHERE
+		AHORARIO.CODCOLIGADA = @CODCOLIGADA
+		
+	UNION ALL
+	
+	SELECT
+		AHORARIOJORNADA.CODCOLIGADA,
+		AHORARIOJORNADA.CODHORARIO,
+		AHORARIOJORNADA.DESCRICAO AS HORARIO,
+		'' HORAINICIO,
+		'J' TIPO
+	FROM AHORARIOJORNADA
+	WHERE
+		AHORARIOJORNADA.CODCOLIGADA = @CODCOLIGADA
+	),
+		
+	cte_PERIODO AS
+	(
+	SELECT
+		AAFHTFUN.CODCOLIGADA,
+		AAFHTFUN.CHAPA,
+		AAFHTFUN.DATA,
+		CASE
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 1 THEN 'DOM'
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 2 THEN 'SEG'
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 3 THEN 'TER'
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 4 THEN 'QUA'
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 5 THEN 'QUI'
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 6 THEN 'SEX'
+			WHEN DATEPART(dw, AAFHTFUN.DATA) = 7 THEN 'SAB'
+		END DIA,
+		CASE 
+			WHEN AAFHTFUN.FERIADO > 0 THEN 'Feriado'
+			WHEN AAFHTFUN.COMPENSADO > 0 THEN 'Compensado'
+			WHEN AAFHTFUN.DESCANSO > 0 THEN 'Descanso'
+			ELSE 'Normal'
+		END TIPO,
+		AAFHTFUN.BASE,
+		AAFHTFUN.HTRAB,
+		AAFHTFUN.EXTRAAUTORIZADO,
+		AAFHTFUN.ATRASO,
+		AAFHTFUN.FALTA,
+		AAFHTFUN.ADICIONAL,
+		(SELECT TOP 1
+			DATEDIFF(mi, AOCORRENCIACALCULADA.INICIO,AOCORRENCIACALCULADA.FIM)+ISNULL(DATEDIFF(mi, AUX.INICIO,AUX.FIM),0)
+		FROM AOCORRENCIACALCULADA(nolock)
+		LEFT JOIN AOCORRENCIACALCULADA AUX(nolock) ON
+			AUX.CODCOLIGADA = AOCORRENCIACALCULADA.CODCOLIGADA AND
+			AUX.CHAPA = AOCORRENCIACALCULADA.CHAPA AND
+			AUX.DATAREFERENCIA = AOCORRENCIACALCULADA.DATAREFERENCIA AND
+			AUX.FIM = AOCORRENCIACALCULADA.INICIO AND
+			AUX.TIPOOCORRENCIA IN ('EA')
+		WHERE
+			AOCORRENCIACALCULADA.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+			AOCORRENCIACALCULADA.CHAPA = AAFHTFUN.CHAPA AND
+			AOCORRENCIACALCULADA.DATAREFERENCIA = AAFHTFUN.DATA AND
+			AOCORRENCIACALCULADA.TIPOOCORRENCIA = 'T'
+		ORDER BY
+			AOCORRENCIACALCULADA.INICIO
+		) TRABINICIO,
+		ISNULL(
+		(SELECT
+			SUM(DATEDIFF(mi, AOCORRENCIACALCULADA.INICIO,AOCORRENCIACALCULADA.FIM))
+		FROM AOCORRENCIACALCULADA(nolock)
+		WHERE
+			AOCORRENCIACALCULADA.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+			AOCORRENCIACALCULADA.CHAPA = AAFHTFUN.CHAPA AND
+			AOCORRENCIACALCULADA.DATAREFERENCIA = AAFHTFUN.DATA AND
+			AOCORRENCIACALCULADA.TIPOOCORRENCIA = 'AREF' AND
+			(
+			EXISTS (SELECT 1
+					FROM ABATFUN
+					WHERE
+						ABATFUN.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+						ABATFUN.CHAPA = AAFHTFUN.CHAPA AND
+						ISNULL(ABATFUN.DATAREFERENCIA,ABATFUN.BATIDA) = AOCORRENCIACALCULADA.DATAREFERENCIA AND
+						ABATFUN.BATIDA = (DATEPART(HH,AOCORRENCIACALCULADA.INICIO)*60)+DATEPART(mi,AOCORRENCIACALCULADA.INICIO)
+						) AND
+			EXISTS (SELECT 1
+					FROM ABATFUN
+					WHERE
+						ABATFUN.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+						ABATFUN.CHAPA = AAFHTFUN.CHAPA AND
+						ISNULL(ABATFUN.DATAREFERENCIA,ABATFUN.BATIDA) = AOCORRENCIACALCULADA.DATAREFERENCIA AND
+						ABATFUN.BATIDA >= (DATEPART(HH,AOCORRENCIACALCULADA.FIM)*60)+DATEPART(mi,AOCORRENCIACALCULADA.FIM)
+					)
+				)
+			),
+			(SELECT
+				MAX(CASE WHEN SEQ = 3 THEN BATIDA ELSE 0 END) -
+				MAX(CASE WHEN SEQ = 2 THEN BATIDA ELSE 0 END)
+			FROM
+			(SELECT
+				ABATFUN.DATAREFERENCIA,
+				ABATFUN.BATIDA,
+				ROW_NUMBER() OVER(ORDER BY ISNULL(ABATFUN.DATAREFERENCIA,ABATFUN.DATA), ABATFUN.BATIDA) SEQ
+			FROM ABATFUN
+			WHERE
+				ABATFUN.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+				ABATFUN.CHAPA = AAFHTFUN.CHAPA AND
+				ISNULL(ABATFUN.DATAREFERENCIA,ABATFUN.DATA) = AAFHTFUN.DATA
+			) T
+			WHERE
+				SEQ IN (2,3)
+			HAVING
+				(MAX(CASE WHEN SEQ = 3 THEN BATIDA ELSE 0 END) -
+				MAX(CASE WHEN SEQ = 2 THEN BATIDA ELSE 0 END)) > 0
+			)
+			) AS REF,
+			ISNULL(
+			(SELECT TOP 1
+				0
+			FROM AAFHTFUN AS AUX
+			WHERE
+				AUX.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+				AUX.CHAPA = AAFHTFUN.CHAPA AND
+				AUX.DATA BETWEEN DATEADD(DAY, -6, AAFHTFUN.DATA) AND AAFHTFUN.DATA AND
+				AUX.HTRAB = 0
+			),1) AS FOLGA7DIAS,
+			CASE 
+				WHEN AAFHTFUN.DATA = EOMONTH(AAFHTFUN.DATA) THEN
+					ISNULL(
+					(SELECT TOP 1
+						0
+					FROM AAFHTFUN AS AUX
+					WHERE
+						AUX.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND
+						AUX.CHAPA = AAFHTFUN.CHAPA AND
+						MONTH(AUX.DATA) = MONTH(AAFHTFUN.DATA) AND
+						YEAR(AUX.DATA) = YEAR(AAFHTFUN.DATA) AND
+						DATEPART(dw, AUX.DATA) = 1 AND
+						AUX.HTRAB = 0 
+					),1)
+			END AS FOLGADOMINGO
+		
+	FROM AAFHTFUN
+	WHERE
+		AAFHTFUN.CODCOLIGADA = @CODCOLIGADA AND
+		AAFHTFUN.DATA BETWEEN @DTINICIO AND @DTFIM
+	),
+	cte_CRITICAS AS
+	(
+	SELECT
+		T.CODCOLIGADA,
+		T.CHAPA,
+		T.DATA,
+		MAX(T.CRITICAINTERJORNADA) AS CRITICAINTERJORNADA,
+		MAX(T.CRITICAMAIS10H) AS CRITICAMAIS10H,
+		MAX(T.CRITICABATSEMPAR) AS CRITICABATSEMPAR
+	FROM
+	(
+	SELECT
+		AAVISOCALCULADO.CODCOLIGADA,
+		AAVISOCALCULADO.CHAPA,
+		AAVISOCALCULADO.DATAREFERENCIA AS DATA,
+		CASE WHEN AAVISOCALCULADO.CODAVISO = 1 THEN 1 ELSE 0 END AS CRITICAINTERJORNADA,
+		CASE WHEN AAVISOCALCULADO.CODAVISO = 2 THEN 1 ELSE 0 END AS CRITICAMAIS10H,
+		CASE WHEN AAVISOCALCULADO.CODAVISO = 5 THEN 1 ELSE 0 END AS CRITICABATSEMPAR
+	
+	FROM AAVISOCALCULADO
+	WHERE
+		AAVISOCALCULADO.CODCOLIGADA = @CODCOLIGADA AND
+		AAVISOCALCULADO.DATAREFERENCIA BETWEEN @DTINICIO AND @DTFIM AND
+		AAVISOCALCULADO.CODAVISO IN (1,2,5)
+		
+	) T
+	GROUP BY
+		T.CODCOLIGADA,
+		T.CHAPA,
+		T.DATA
+	),
+	
+	cte_BANCO AS
+	(
+	SELECT
+		ABANCOHORFUN.CODCOLIGADA,
+		ABANCOHORFUN.CHAPA,
+		ABANCOHORFUN.DATA,
+		SUM(ABANCOHORFUN.EXTRAFAIXA1+ABANCOHORFUN.EXTRAFAIXA2+ABANCOHORFUN.EXTRAFAIXA3+ABANCOHORFUN.EXTRAFAIXA4+ABANCOHORFUN.EXTRAFAIXA5+ABANCOHORFUN.EXTRADESC1+ABANCOHORFUN.EXTRADESC2+ABANCOHORFUN.EXTRAFER1+ABANCOHORFUN.EXTRAFER2+ABANCOHORFUN.EXTRACOMP1+ABANCOHORFUN.EXTRACOMP2)-SUM(ABANCOHORFUN.FALTA+ABANCOHORFUN.ATRASO) AS HORAS
+	FROM ABANCOHORFUN
+	WHERE
+		ABANCOHORFUN.CODCOLIGADA = @CODCOLIGADA AND
+		ABANCOHORFUN.DATA BETWEEN @DTINICIO AND @DTFIM
+	GROUP BY
+		ABANCOHORFUN.CODCOLIGADA,
+		ABANCOHORFUN.CHAPA,
+		ABANCOHORFUN.DATA
+	),
+	cte_EXTRAS AS
+	(
+	SELECT
+		AMOVFUNDIA.CODCOLIGADA,
+		AMOVFUNDIA.CHAPA,
+		AMOVFUNDIA.DATA,
+		SUM(AMOVFUNDIA.NUMHORAS) AS HORAS
+	FROM AMOVFUNDIA
+	JOIN PEVENTO ON
+		PEVENTO.CODCOLIGADA = AMOVFUNDIA.CODCOLIGADA AND
+		PEVENTO.CODIGO = AMOVFUNDIA.CODEVE AND
+		PEVENTO.PORCINCID > 1 AND
+		PEVENTO.VALHORDIAREF = 'H' 
+	WHERE
+		AMOVFUNDIA.CODCOLIGADA = @CODCOLIGADA AND
+		AMOVFUNDIA.DATA BETWEEN @DTINICIO AND @DTFIM
+	GROUP BY
+		AMOVFUNDIA.CODCOLIGADA,
+		AMOVFUNDIA.CHAPA,
+		AMOVFUNDIA.DATA
+		
+	),
+	
+	cte_FUNC AS
+	(
+	SELECT
+		PFUNC.CODCOLIGADA,
+		PFUNC.CHAPA,
+		PFUNC.NOME,
+		PFUNC.DATAADMISSAO,
+		PFUNC.DTTRANSFERENCIA,
+		PFUNC.CODTIPO,
+		PFUNC.CODSECAO,
+		PSECAO.DESCRICAO SECAO,
+		isnull(
+		(SELECT TOP 1
+			AUX.NOME
+		FROM PSUBSTSUP
+		JOIN PFUNC AUX ON
+			AUX.CODCOLIGADA = PSUBSTSUP.CODCOLIGADA AND
+			AUX.CHAPA = PSUBSTSUP.CHAPASUBST
+		WHERE
+			PSUBSTSUP.CODCOLIGADA = PFUNC.CODCOLIGADA AND
+			PSUBSTSUP.CODSECAO = PFUNC.CODSECAO AND
+			PSUBSTSUP.CODEQUIPE = PFUNC.CODEQUIPE AND
+			PSUBSTSUP.CHAPASUBST <> PFUNC.CHAPA AND
+			PSUBSTSUP.DATAINICIO <= CONVERT(DATE, GETDATE()) AND
+			PSUBSTSUP.DATAFIM IS NULL
+		),
+		(SELECT TOP 1
+			AUX.NOME
+		FROM PSUBSTCHEFE
+		JOIN PFUNC AUX ON
+			AUX.CODCOLIGADA = PSUBSTCHEFE.CODCOLSUBST AND
+			AUX.CHAPA = PSUBSTCHEFE.CHAPASUBST
+		WHERE
+			PSUBSTCHEFE.CODCOLIGADA = PFUNC.CODCOLIGADA AND
+			PSUBSTCHEFE.CODSECAO = SUBSTRING(PFUNC.CODSECAO, 1, LEN(PSUBSTCHEFE.CODSECAO)) AND
+			PSUBSTCHEFE.CHAPASUBST <> PFUNC.CHAPA AND
+			PSUBSTCHEFE.DATAINICIO <= CONVERT(DATE, GETDATE()) AND
+			PSUBSTCHEFE.DATAFIM IS NULL
+		ORDER BY
+			LEN(PSUBSTCHEFE.CODSECAO) DESC,
+			PSUBSTCHEFE.DATAINICIO
+		)) CHEFEDIRETO
+	
+	FROM PFUNC
+	JOIN PSECAO ON
+		PSECAO.CODCOLIGADA = PFUNC.CODCOLIGADA AND
+		PSECAO.CODIGO = PFUNC.CODSECAO
+	WHERE
+		PFUNC.CODCOLIGADA = @CODCOLIGADA AND
+		PFUNC.DATAADMISSAO <= @DTFIM AND
+		(PFUNC.DATADEMISSAO IS NULL OR PFUNC.DATADEMISSAO >= @DTINICIO)
+	)
+
+SELECT
+	CODCOLIGADA 'Col',
+	CHAPA 'Chapa',
+	NOME 'Nome',
+	DATAADMISSAO 'Dt Admissão',
+	DATA 'Data',
+	DIA 'Dia Sem',
+	TIPO 'Tipo Dia',
+	HORARIO 'Horario',
+	CODHORARIO 'Cód Horário',
+	CRITICAREF 'Refeição',
+	CASE WHEN CRITICAINTERJORNADA = 1 THEN 'Sim' ELSE 'Não' END 'Interjornada',
+	CASE WHEN CRITICABATSEMPAR = 1 THEN 'Sim' ELSE 'Não' END 'Batida sem par',
+	CASE WHEN CRITICAPAUSA = 1 THEN 'Sim' ELSE 'Não' END 'Pausa > 6h',
+	CASE WHEN CRITICAMAIS10H = 1 THEN 'Sim' ELSE 'Não' END 'Trabalho > 10h',
+	CASE WHEN FOLGA7DIAS = 1 THEN 'Sim' ELSE 'Não' END 'Sem Folga 7 dias',
+	CASE WHEN FOLGADOMINGO = 1 THEN 'Sim' ELSE 'Não' END 'Folta Domingo',
+	CODTIPO 'Cód Tipo',
+	CODSECAO ' Cód Seção',
+	SECAO 'Seção',
+	CHEFEDIRETO 'Nome do Chefe Direto'
+FROM
+(
+SELECT
+	FUNC.CODCOLIGADA,
+	FUNC.CHAPA,
+	FUNC.NOME,
+	FUNC.DATAADMISSAO,
+	PERIODO.DATA,
+	PERIODO.DIA,
+	PERIODO.TIPO,
+	PERIODO.BASE,
+	PERIODO.HTRAB,
+	PERIODO.EXTRAAUTORIZADO,
+	PERIODO.ATRASO,
+	PERIODO.FALTA,
+	PERIODO.ADICIONAL,
+	EXTRAS.HORAS AS EXTRAS,
+	PERIODO.REF,
+	BANCO.HORAS AS BANCO,
+	FUNC.CODTIPO,
+	FUNC.CODSECAO,
+	FUNC.SECAO,
+	FUNC.CHEFEDIRETO,
+	CRITICAS.CRITICAINTERJORNADA,
+	CRITICAS.CRITICABATSEMPAR,
+	CASE WHEN PERIODO.TRABINICIO > (6 * 60) THEN 1 END CRITICAPAUSA,
+	CRITICAS.CRITICAMAIS10H,
+	PERIODO.FOLGA7DIAS,
+	PERIODO.FOLGADOMINGO,
+	CASE 
+		WHEN PERIODO.BASE > 0 AND PERIODO.BASE > (6*60) AND PERIODO.HTRAB > 0  AND PERIODO.REF = 0 THEN 'Sem Pausa'
+		WHEN PERIODO.BASE = 0 AND PERIODO.HTRAB > (6*60) AND PERIODO.HTRAB > 0  AND PERIODO.REF = 0 THEN 'Sem Pausa'
+		
+		WHEN PERIODO.BASE > 0 AND PERIODO.BASE > (6*60) AND PERIODO.HTRAB > 0  AND PERIODO.REF < 60 THEN 'Menor 60min'
+		WHEN PERIODO.BASE = 0 AND PERIODO.HTRAB > (6*60) AND PERIODO.HTRAB > 0  AND PERIODO.REF = 0 THEN 'Menor 60min'
+		
+		WHEN PERIODO.BASE > 0 AND PERIODO.BASE > (4*60) AND PERIODO.HTRAB > 0  AND PERIODO.REF < 15 THEN 'Menor 15min'
+	END CRITICAREF,
+	HORARIO.CODHORARIO,
+	HORARIO.HORARIO,
+	HORARIO.HORINICIO
+	
+FROM cte_PERIODO AS PERIODO
+JOIN cte_FUNC AS FUNC ON
+	FUNC.CODCOLIGADA = PERIODO.CODCOLIGADA AND
+	FUNC.CHAPA = PERIODO.CHAPA AND
+	(FUNC.DTTRANSFERENCIA IS NULL OR FUNC.DTTRANSFERENCIA <= PERIODO.DATA)
+LEFT JOIN cte_EXTRAS AS EXTRAS ON
+	EXTRAS.CODCOLIGADA = PERIODO.CODCOLIGADA AND
+	EXTRAS.CHAPA = PERIODO.CHAPA AND
+	EXTRAS.DATA = PERIODO.DATA
+LEFT JOIN cte_BANCO AS BANCO ON
+	BANCO.CODCOLIGADA = PERIODO.CODCOLIGADA AND
+	BANCO.CHAPA = PERIODO.CHAPA AND
+	BANCO.DATA = PERIODO.DATA
+LEFT JOIN cte_CRITICAS AS CRITICAS ON
+	CRITICAS.CODCOLIGADA = PERIODO.CODCOLIGADA AND
+	CRITICAS.CHAPA = PERIODO.CHAPA AND
+	CRITICAS.DATA = PERIODO.DATA
+OUTER APPLY 
+	(
+	SELECT TOP 1
+		cte_HISTHOR.DTMUDANCA,
+		cte_HISTHOR.CODHORARIO,
+		cte_HISTHOR.TIPO
+	FROM cte_HISTHOR
+	WHERE
+		cte_HISTHOR.CODCOLIGADA = FUNC.CODCOLIGADA AND
+		cte_HISTHOR.CHAPA = FUNC.CHAPA
+ORDER BY
+	cte_HISTHOR.DTMUDANCA DESC
+	) HSTHOR
+LEFT JOIN cte_HORARIO AS HORARIO ON
+	HORARIO.CODCOLIGADA = FUNC.CODCOLIGADA AND
+	HORARIO.CODHORARIO = HSTHOR.CODHORARIO AND
+	HORARIO.TIPO = HSTHOR.TIPO
+) T
+WHERE
+	(
+	@CRITICA <> 'S' OR
+	(@CRITICA = 'S' AND 
+		(
+		EXTRAAUTORIZADO > 0 OR 
+		ATRASO > 0 OR 
+		FALTA > 0 OR 
+		EXTRAS > 0 OR 
+		BANCO > 0 OR 
+		ADICIONAL > 0 OR
+		isnull(CRITICAREF,'') <> '' OR 
+	   	isnull(CRITICAINTERJORNADA,0) <> 0 OR 
+	   	isnull(CRITICABATSEMPAR,0) <> 0 OR 
+	   	isnull(CRITICAPAUSA,0) <> '' OR 
+	   	isnull(CRITICAMAIS10H,0) <> 0 OR 
+	   	isnull(FOLGA7DIAS,0) <> 0 OR 
+   		isnull(FOLGADOMINGO,0) <> 0
+		)
+	)
+	)
+ORDER BY
+	CODCOLIGADA,
+	CHAPA,
+	DATA`
     }
 ];
 
@@ -337,6 +1042,7 @@ let activeDialect = "sqlserver";
 let customFilters = [];
 let queryXmlCode = "LABORE.SQL001";
 let queryXmlTitle = "Consulta Customizada RM Labore";
+let loadedCustomSQL = null;
 
 // DOM Elements
 const tablesListContainer = document.getElementById("tables-list");
@@ -544,6 +1250,7 @@ function initTablesAccordion() {
             fieldCheckbox.dataset.field = fieldKey;
             fieldCheckbox.checked = field.selected;
             fieldCheckbox.addEventListener("change", (e) => {
+                loadedCustomSQL = null; // Revert to dynamic SQL on edit
                 field.selected = e.target.checked;
                 // If checking field, auto-check parent table
                 if (e.target.checked && !activeTables.has(tableKey)) {
@@ -591,6 +1298,7 @@ function initTablesAccordion() {
 
 // Toggle table activation
 function toggleTableSelection(tableKey, isSelected) {
+    loadedCustomSQL = null; // Revert to dynamic SQL on edit
     if (isSelected) {
         activeTables.add(tableKey);
     } else {
@@ -751,6 +1459,83 @@ function calculateJoins(baseTable, selectedTables) {
                 condition = "PFUNC.CODCOLIGADA = PFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFERIAS.CHAPA";
             }
         }
+        else if (table === "PFHSTHOR") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = PFHSTHOR.CODCOLIGADA AND PFUNC.CHAPA = PFHSTHOR.CHAPA";
+            }
+        }
+        else if (table === "AHORARIO") {
+            if (selectedTables.has("PFHSTHOR")) {
+                condition = "PFHSTHOR.CODCOLIGADA = AHORARIO.CODCOLIGADA AND PFHSTHOR.CODHORARIO = AHORARIO.CODIGO";
+            } else if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AHORARIO.CODCOLIGADA";
+            }
+        }
+        else if (table === "ABATFUN") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = ABATFUN.CODCOLIGADA AND PFUNC.CHAPA = ABATFUN.CHAPA";
+            }
+        }
+        else if (table === "AMOVFUN") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AMOVFUN.CODCOLIGADA AND PFUNC.CHAPA = AMOVFUN.CHAPA";
+            }
+        }
+        else if (table === "ABANCOHORAS") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = ABANCOHORAS.CODCOLIGADA AND PFUNC.CHAPA = ABANCOHORAS.CHAPA";
+            }
+        }
+        else if (table === "AAFHTFUN") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AAFHTFUN.CODCOLIGADA AND PFUNC.CHAPA = AAFHTFUN.CHAPA";
+            }
+        }
+        else if (table === "AAVISOCALCULADO") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AAVISOCALCULADO.CODCOLIGADA AND PFUNC.CHAPA = AAVISOCALCULADO.CHAPA";
+            }
+        }
+        else if (table === "ABANCOHORFUN") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = ABANCOHORFUN.CODCOLIGADA AND PFUNC.CHAPA = ABANCOHORFUN.CHAPA";
+            }
+        }
+        else if (table === "AMOVFUNDIA") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AMOVFUNDIA.CODCOLIGADA AND PFUNC.CHAPA = AMOVFUNDIA.CHAPA";
+            }
+        }
+        else if (table === "AJORNADAFUN") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AJORNADAFUN.CODCOLIGADA AND PFUNC.CHAPA = AJORNADAFUN.CHAPA";
+            }
+        }
+        else if (table === "AHORARIOJORNADA") {
+            if (selectedTables.has("AJORNADAFUN")) {
+                condition = "AJORNADAFUN.CODCOLIGADA = AHORARIOJORNADA.CODCOLIGADA AND AJORNADAFUN.CODHORARIO = AHORARIOJORNADA.CODHORARIO";
+            }
+        }
+        else if (table === "AJORHOR") {
+            if (selectedTables.has("AHORARIO")) {
+                condition = "AHORARIO.CODCOLIGADA = AJORHOR.CODCOLIGADA AND AHORARIO.CODIGO = AJORHOR.CODHORARIO";
+            }
+        }
+        else if (table === "AOCORRENCIACALCULADA") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = AOCORRENCIACALCULADA.CODCOLIGADA AND PFUNC.CHAPA = AOCORRENCIACALCULADA.CHAPA";
+            }
+        }
+        else if (table === "PSUBSTSUP") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = PSUBSTSUP.CODCOLIGADA AND PFUNC.CHAPA = PSUBSTSUP.CHAPASUBST";
+            }
+        }
+        else if (table === "PSUBSTCHEFE") {
+            if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = PSUBSTCHEFE.CODCOLIGADA AND PFUNC.CHAPA = PSUBSTCHEFE.CHAPASUBST";
+            }
+        }
         
         if (condition) {
             joinsList.push({
@@ -828,20 +1613,25 @@ function loadTemplate(tpl) {
     
     // 4. Fill custom WHERE filters
     customFilters = [];
-    tpl.filters.forEach(f => {
-        customFilters.push({
-            table: f.table,
-            field: f.field,
-            op: f.op,
-            value: f.value
+    if (tpl.filters && tpl.filters.length > 0) {
+        tpl.filters.forEach(f => {
+            customFilters.push({
+                table: f.table,
+                field: f.field,
+                op: f.op,
+                value: f.value
+            });
         });
-    });
+    }
     
     // 5. Update XML form text
     xmlQueryCodeInput.value = `LABORE.${tpl.id.toUpperCase().replace("-", "_")}`;
     xmlQueryTitleInput.value = tpl.title;
     queryXmlCode = xmlQueryCodeInput.value;
     queryXmlTitle = xmlQueryTitleInput.value;
+    
+    // Set custom SQL if defined
+    loadedCustomSQL = tpl.customSQL || null;
     
     // 6. Refresh UIs
     initTablesAccordion();
@@ -993,40 +1783,60 @@ function updatePlanilhaNetMapping() {
     
     const params = [];
     
-    if (cbFilterColigada.checked) {
+    if (loadedCustomSQL) {
         params.push({
-            name: ":CODCOLIGADA_N",
+            name: ":$CODCOLIGADA",
             type: "Numérico (Coligada)",
-            desc: "Identifica a Coligada ativa (ex: associar à célula A1 da Planilha .NET)."
+            desc: "Identifica a Coligada ativa no contexto de execução do RM."
+        }, {
+            name: ":PLN_$B$1_D",
+            type: "Data/Hora",
+            desc: "Data de Início do período apurado (associada à célula B1 da Planilha .NET)."
+        }, {
+            name: ":PLN_$B$2_D",
+            type: "Data/Hora",
+            desc: "Data de Término do período apurado (associada à célula B2 da Planilha .NET)."
+        }, {
+            name: ":PLN_$B$3_S",
+            type: "Alfanumérico (Texto)",
+            desc: "Filtro de Críticas/Ocorrências: 'S' para mostrar apenas dias com inconsistências, 'N' para tudo (célula B3)."
         });
-    }
-    
-    if (cbFilterChapa.checked && activeTables.has("PFUNC")) {
-        params.push({
-            name: ":CHAPA_S",
-            type: "Alfanumérico (Matrícula)",
-            desc: "Identifica a Chapa do Funcionário (ex: associar à célula B1 da Planilha .NET)."
-        });
-    }
-    
-    // Check if custom filters contain any parameter
-    customFilters.forEach(f => {
-        if (f.value.startsWith(":")) {
-            const paramName = f.value;
-            let typeName = "Alfanumérico (Texto)";
-            if (paramName.endsWith("_N")) typeName = "Numérico (Inteiro)";
-            else if (paramName.endsWith("_V")) typeName = "Numérico (Decimal)";
-            else if (paramName.endsWith("_D")) typeName = "Data/Hora";
-            
-            if (!params.some(p => p.name === paramName)) {
-                params.push({
-                    name: paramName,
-                    type: typeName,
-                    desc: `Filtro customizado para o campo ${f.table}.${f.field} (associar à célula correspondente).`
-                });
-            }
+    } else {
+        if (cbFilterColigada.checked) {
+            params.push({
+                name: ":CODCOLIGADA_N",
+                type: "Numérico (Coligada)",
+                desc: "Identifica a Coligada ativa (ex: associar à célula A1 da Planilha .NET)."
+            });
         }
-    });
+        
+        if (cbFilterChapa.checked && (activeTables.has("PFUNC") || activeTables.has("PFHSTHOR") || activeTables.has("ABATFUN") || activeTables.has("AMOVFUN") || activeTables.has("ABANCOHORAS"))) {
+            params.push({
+                name: ":CHAPA_S",
+                type: "Alfanumérico (Matrícula)",
+                desc: "Identifica a Chapa do Funcionário (ex: associar à célula B1 da Planilha .NET)."
+            });
+        }
+        
+        // Check if custom filters contain any parameter
+        customFilters.forEach(f => {
+            if (f.value.startsWith(":")) {
+                const paramName = f.value;
+                let typeName = "Alfanumérico (Texto)";
+                if (paramName.endsWith("_N")) typeName = "Numérico (Inteiro)";
+                else if (paramName.endsWith("_V")) typeName = "Numérico (Decimal)";
+                else if (paramName.endsWith("_D")) typeName = "Data/Hora";
+                
+                if (!params.some(p => p.name === paramName)) {
+                    params.push({
+                        name: paramName,
+                        type: typeName,
+                        desc: `Filtro customizado para o campo ${f.table}.${f.field} (associar à célula correspondente).`
+                    });
+                }
+            }
+        });
+    }
     
     if (params.length === 0) {
         mappingContainer.innerHTML = `
@@ -1083,6 +1893,13 @@ function updatePlanilhaNetMapping() {
 
 // 7. SQL QUERY GENERATOR ENGINE
 function generateSQL() {
+    if (loadedCustomSQL) {
+        sqlRawTextarea.value = loadedCustomSQL;
+        sqlHighlighted.innerHTML = highlightSQL(loadedCustomSQL);
+        updatePlanilhaNetMapping();
+        return;
+    }
+    
     if (activeTables.size === 0) {
         sqlHighlighted.innerHTML = `<span class="sql-comment">-- Selecione tabelas e campos na barra lateral para gerar a consulta...</span>`;
         sqlRawTextarea.value = "-- Selecione tabelas e campos na barra lateral para gerar a consulta...";
@@ -1146,13 +1963,33 @@ function generateSQL() {
             whereClauses.push(`PSECAO.CODCOLIGADA = ${colParam}`);
         } else if (activeTables.has("PFUNCAO")) {
             whereClauses.push(`PFUNCAO.CODCOLIGADA = ${colParam}`);
+        } else if (activeTables.has("PFHSTHOR")) {
+            whereClauses.push(`PFHSTHOR.CODCOLIGADA = ${colParam}`);
+        } else if (activeTables.has("AHORARIO")) {
+            whereClauses.push(`AHORARIO.CODCOLIGADA = ${colParam}`);
+        } else if (activeTables.has("ABATFUN")) {
+            whereClauses.push(`ABATFUN.CODCOLIGADA = ${colParam}`);
+        } else if (activeTables.has("AMOVFUN")) {
+            whereClauses.push(`AMOVFUN.CODCOLIGADA = ${colParam}`);
+        } else if (activeTables.has("ABANCOHORAS")) {
+            whereClauses.push(`ABANCOHORAS.CODCOLIGADA = ${colParam}`);
         }
     }
     
     // Chapa parameter
-    if (cbFilterChapa.checked && activeTables.has("PFUNC")) {
+    if (cbFilterChapa.checked) {
         const chapaParam = modePlanilhaNet.checked ? ":CHAPA_S" : ":PLN_CHAPA";
-        whereClauses.push(`PFUNC.CHAPA = ${chapaParam}`);
+        if (activeTables.has("PFUNC")) {
+            whereClauses.push(`PFUNC.CHAPA = ${chapaParam}`);
+        } else if (activeTables.has("PFHSTHOR")) {
+            whereClauses.push(`PFHSTHOR.CHAPA = ${chapaParam}`);
+        } else if (activeTables.has("ABATFUN")) {
+            whereClauses.push(`ABATFUN.CHAPA = ${chapaParam}`);
+        } else if (activeTables.has("AMOVFUN")) {
+            whereClauses.push(`AMOVFUN.CHAPA = ${chapaParam}`);
+        } else if (activeTables.has("ABANCOHORAS")) {
+            whereClauses.push(`ABANCOHORAS.CHAPA = ${chapaParam}`);
+        }
     }
     
     // Custom filters
@@ -1358,15 +2195,26 @@ tableSearchInput.addEventListener("input", (e) => {
 });
 
 // Common checkboxes triggers
-cbFilterActive.addEventListener("change", generateSQL);
-cbFilterColigada.addEventListener("change", generateSQL);
-cbFilterChapa.addEventListener("change", generateSQL);
+cbFilterActive.addEventListener("change", () => {
+    loadedCustomSQL = null;
+    generateSQL();
+});
+cbFilterColigada.addEventListener("change", () => {
+    loadedCustomSQL = null;
+    generateSQL();
+});
+cbFilterChapa.addEventListener("change", () => {
+    loadedCustomSQL = null;
+    generateSQL();
+});
 cbAutoJoin.addEventListener("change", (e) => {
+    loadedCustomSQL = null;
     updateActiveTablesUI();
     generateSQL();
 });
 
 modePlanilhaNet.addEventListener("change", (e) => {
+    loadedCustomSQL = null;
     const active = e.target.checked;
     if (active) {
         lblFilterColigada.textContent = "Parâmetro :CODCOLIGADA_N";
