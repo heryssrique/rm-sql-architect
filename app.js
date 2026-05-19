@@ -111,7 +111,7 @@ const rmSchema = {
             CODFUNCAO: { desc: "Código da Função", type: "varchar", selected: false }
         }
     },
-    PFUFERIAS: {
+        PFUFERIAS: {
         code: "PFUFERIAS",
         desc: "Períodos Aquisitivos de Férias",
         priority: 2,
@@ -120,10 +120,8 @@ const rmSchema = {
             CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
             INICIOPERAQUIS: { desc: "Início do Período Aquisitivo", type: "datetime", selected: true },
             FIMPERAQUIS: { desc: "Fim do Período Aquisitivo", type: "datetime", selected: true },
-            DATALIMITE: { desc: "Data Limite para Gozo", type: "datetime", selected: true },
-            STATUS: { desc: "Status (A=Aberto, Q=Quitado, P=Parcial)", type: "char", selected: true },
-            DIASDIREITO: { desc: "Dias de Direito", type: "smallint", selected: false },
-            SALDO: { desc: "Saldo de Dias de Férias", type: "smallint", selected: true }
+            SALDO: { desc: "Saldo de Dias de Férias", type: "smallint", selected: true },
+            PERIODOABERTO: { desc: "Período em Aberto (0/1)", type: "smallint", selected: true }
         }
     },
     PFHSTHOR: {
@@ -22908,12 +22906,11 @@ const sqlTemplates = [
         selectedFields: {
             PFUNC: ["CODCOLIGADA", "CHAPA"],
             PPESSOA: ["NOME"],
-            PFUFERIAS: ["INICIOPERAQUIS", "FIMPERAQUIS", "DATALIMITE", "STATUS", "SALDO"]
+            PFUFERIAS: ["INICIOPERAQUIS", "FIMPERAQUIS", "SALDO", "PERIODOABERTO"]
         },
         filters: [
-            { table: "PFUFERIAS", field: "STATUS", op: "<>", value: "'Q'", type: "custom" },
             { table: "PFUFERIAS", field: "SALDO", op: ">", value: "0", type: "custom" },
-            { table: "PFUFERIAS", field: "DATALIMITE", op: "<=", value: "'2026-12-31'", type: "custom" }
+            { table: "PFUFERIAS", field: "PERIODOABERTO", op: "=", value: "1", type: "custom" }
         ],
         activeFilters: { active: true, coligada: true, chapa: false }
     },
@@ -22941,10 +22938,9 @@ const sqlTemplates = [
             PFUNC: ["CODCOLIGADA", "CHAPA"],
             PPESSOA: ["NOME"],
             PSECAO: ["DESCRICAO"],
-            PFUFERIAS: ["FIMPERAQUIS", "DATALIMITE", "STATUS", "SALDO"]
+            PFUFERIAS: ["FIMPERAQUIS", "SALDO", "PERIODOABERTO"]
         },
         filters: [
-            { table: "PFUFERIAS", field: "STATUS", op: "IN", value: "('A', 'P')", type: "custom" },
             { table: "PFUFERIAS", field: "SALDO", op: ">", value: "0", type: "custom" }
         ],
         activeFilters: { active: true, coligada: true, chapa: false }
