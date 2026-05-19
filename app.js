@@ -51,7 +51,7 @@ const rmSchema = {
         priority: 7,
         fields: {
             CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
-            CODSECAO: { desc: "Código da Seção", type: "varchar", selected: true },
+            CODIGO: { desc: "Código da Seção", type: "varchar", selected: true },
             DESCRICAO: { desc: "Nome da Seção / Filial", type: "varchar", selected: true },
             CGC: { desc: "CNPJ da Filial/Seção", type: "varchar", selected: false },
             ATIVO: { desc: "Seção Ativa (0/1)", type: "smallint", selected: false }
@@ -118,12 +118,12 @@ const rmSchema = {
         fields: {
             CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
             CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
-            INICIOAQUIS: { desc: "Início do Período Aquisitivo", type: "datetime", selected: true },
+            INICIOPERAQUIS: { desc: "Início do Período Aquisitivo", type: "datetime", selected: true },
             FIMPERAQUIS: { desc: "Fim do Período Aquisitivo", type: "datetime", selected: true },
-            LIMITEGOZO: { desc: "Data Limite para Gozo", type: "datetime", selected: true },
+            DATALIMITE: { desc: "Data Limite para Gozo", type: "datetime", selected: true },
             STATUS: { desc: "Status (A=Aberto, Q=Quitado, P=Parcial)", type: "char", selected: true },
-            NRODIASDIREITO: { desc: "Dias de Direito", type: "smallint", selected: false },
-            SALDODIAS: { desc: "Saldo de Dias de Férias", type: "smallint", selected: true }
+            DIASDIREITO: { desc: "Dias de Direito", type: "smallint", selected: false },
+            SALDO: { desc: "Saldo de Dias de Férias", type: "smallint", selected: true }
         }
     },
     PFHSTHOR: {
@@ -22700,7 +22700,7 @@ const sqlTemplates = [
         selectedFields: {
             PFUNC: ["CODCOLIGADA", "CHAPA", "CODSITUACAO", "SALARIO", "DATAADMISSAO"],
             PPESSOA: ["NOME", "CPF", "EMAIL"],
-            PSECAO: ["CODSECAO", "DESCRICAO"],
+            PSECAO: ["CODIGO", "DESCRICAO"],
             PFUNCAO: ["NOME", "CBO"]
         },
         filters: [
@@ -22908,12 +22908,12 @@ const sqlTemplates = [
         selectedFields: {
             PFUNC: ["CODCOLIGADA", "CHAPA"],
             PPESSOA: ["NOME"],
-            PFUFERIAS: ["INICIOAQUIS", "FIMPERAQUIS", "LIMITEGOZO", "STATUS", "SALDODIAS"]
+            PFUFERIAS: ["INICIOPERAQUIS", "FIMPERAQUIS", "DATALIMITE", "STATUS", "SALDO"]
         },
         filters: [
             { table: "PFUFERIAS", field: "STATUS", op: "<>", value: "'Q'", type: "custom" },
-            { table: "PFUFERIAS", field: "SALDODIAS", op: ">", value: "0", type: "custom" },
-            { table: "PFUFERIAS", field: "LIMITEGOZO", op: "<=", value: "'2026-12-31'", type: "custom" }
+            { table: "PFUFERIAS", field: "SALDO", op: ">", value: "0", type: "custom" },
+            { table: "PFUFERIAS", field: "DATALIMITE", op: "<=", value: "'2026-12-31'", type: "custom" }
         ],
         activeFilters: { active: true, coligada: true, chapa: false }
     },
@@ -22941,11 +22941,11 @@ const sqlTemplates = [
             PFUNC: ["CODCOLIGADA", "CHAPA"],
             PPESSOA: ["NOME"],
             PSECAO: ["DESCRICAO"],
-            PFUFERIAS: ["FIMPERAQUIS", "LIMITEGOZO", "STATUS", "SALDODIAS"]
+            PFUFERIAS: ["FIMPERAQUIS", "DATALIMITE", "STATUS", "SALDO"]
         },
         filters: [
             { table: "PFUFERIAS", field: "STATUS", op: "IN", value: "('A', 'P')", type: "custom" },
-            { table: "PFUFERIAS", field: "SALDODIAS", op: ">", value: "0", type: "custom" }
+            { table: "PFUFERIAS", field: "SALDO", op: ">", value: "0", type: "custom" }
         ],
         activeFilters: { active: true, coligada: true, chapa: false }
     },
@@ -23795,7 +23795,7 @@ function calculateJoins(baseTable, selectedTables) {
         }
         else if (table === "PSECAO") {
             if (selectedTables.has("PFUNC")) {
-                condition = "PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA AND PFUNC.CODSECAO = PSECAO.CODSECAO";
+                condition = "PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA AND PFUNC.CODSECAO = PSECAO.CODIGO";
             } else if (selectedTables.has("PFPERFF")) {
                 condition = "/* Via PFUNC pendente */";
             } else {
@@ -25117,7 +25117,7 @@ if (btnDbSyncSchema) {
 // Helper for dynamic join conditions when a new table is scanned
 function getAutoJoinCondition(tableName) {
     if (tableName === "PPESSOA") return "PFUNC.CODPESSOA = PPESSOA.CODIGO";
-    if (tableName === "PSECAO") return "PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA AND PFUNC.CODSECAO = PSECAO.CODSECAO";
+    if (tableName === "PSECAO") return "PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA AND PFUNC.CODSECAO = PSECAO.CODIGO";
     if (tableName === "PFUNCAO") return "PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA AND PFUNC.CODFUNCAO = PFUNCAO.CODFUNCAO";
     if (tableName === "PFUFERIAS") return "PFUNC.CODCOLIGADA = PFUFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFUFERIAS.CHAPA";
     if (tableName === "PFERIAS") return "PFUNC.CODCOLIGADA = PFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFERIAS.CHAPA AND PFUFERIAS.FIMPERAQUIS = PFERIAS.FIMPERAQUIS";
