@@ -124,6 +124,25 @@ const rmSchema = {
             PERIODOABERTO: { desc: "Período em Aberto (0/1)", type: "smallint", selected: true }
         }
     },
+    PFUFERIASPER: {
+        code: "PFUFERIASPER",
+        desc: "Períodos de Gozo de Férias",
+        priority: 2,
+        fields: {
+            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa do Funcionário", type: "varchar", selected: false },
+            FIMPERAQUIS: { desc: "Fim do Período Aquisitivo", type: "datetime", selected: true },
+            DATAINICIO: { desc: "Início do Gozo", type: "datetime", selected: true },
+            DATAFIM: { desc: "Fim do Gozo", type: "datetime", selected: true },
+            NRODIASFERIAS: { desc: "Dias de Férias Gozados", type: "numeric", selected: true },
+            NRODIASABONO: { desc: "Dias de Abono Pecuniário", type: "numeric", selected: true },
+            DATAPAGTO: { desc: "Data de Pagamento", type: "datetime", selected: false },
+            DATAAVISO: { desc: "Data de Aviso", type: "datetime", selected: false },
+            SITUACAOFERIAS: { desc: "Situação (M=Marcadas, G=Gozadas...)", type: "varchar", selected: false },
+            FALTAS: { desc: "Faltas no Período", type: "numeric", selected: false },
+            OBSERVACAO: { desc: "Observações", type: "varchar", selected: false }
+        }
+    },
     PFHSTHOR: {
         code: "PFHSTHOR",
         desc: "Histórico de Horários (Ponto)",
@@ -23823,6 +23842,13 @@ function calculateJoins(baseTable, selectedTables) {
                 condition = "PFUNC.CODCOLIGADA = PFUFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFUFERIAS.CHAPA";
             }
         }
+        else if (table === "PFUFERIASPER") {
+            if (selectedTables.has("PFUFERIAS")) {
+                condition = "PFUFERIAS.CODCOLIGADA = PFUFERIASPER.CODCOLIGADA AND PFUFERIAS.CHAPA = PFUFERIASPER.CHAPA AND PFUFERIAS.FIMPERAQUIS = PFUFERIASPER.FIMPERAQUIS";
+            } else if (selectedTables.has("PFUNC")) {
+                condition = "PFUNC.CODCOLIGADA = PFUFERIASPER.CODCOLIGADA AND PFUNC.CHAPA = PFUFERIASPER.CHAPA";
+            }
+        }
         else if (table === "PFHSTHOR") {
             if (selectedTables.has("PFUNC")) {
                 condition = "PFUNC.CODCOLIGADA = PFHSTHOR.CODCOLIGADA AND PFUNC.CHAPA = PFHSTHOR.CHAPA";
@@ -25116,6 +25142,7 @@ function getAutoJoinCondition(tableName) {
     if (tableName === "PSECAO") return "PFUNC.CODCOLIGADA = PSECAO.CODCOLIGADA AND PFUNC.CODSECAO = PSECAO.CODIGO";
     if (tableName === "PFUNCAO") return "PFUNC.CODCOLIGADA = PFUNCAO.CODCOLIGADA AND PFUNC.CODFUNCAO = PFUNCAO.CODFUNCAO";
     if (tableName === "PFUFERIAS") return "PFUNC.CODCOLIGADA = PFUFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFUFERIAS.CHAPA";
+    if (tableName === "PFUFERIASPER") return "PFUNC.CODCOLIGADA = PFUFERIASPER.CODCOLIGADA AND PFUNC.CHAPA = PFUFERIASPER.CHAPA AND PFUFERIAS.FIMPERAQUIS = PFUFERIASPER.FIMPERAQUIS";
     if (tableName === "PFERIAS") return "PFUNC.CODCOLIGADA = PFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFERIAS.CHAPA AND PFUFERIAS.FIMPERAQUIS = PFERIAS.FIMPERAQUIS";
     // General fallback
     return `PFUNC.CODCOLIGADA = ${tableName}.CODCOLIGADA AND PFUNC.CHAPA = ${tableName}.CHAPA`;
