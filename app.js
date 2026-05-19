@@ -17357,11 +17357,6 @@ const rmSchema = {
                 "type": "smallint",
                 "selected": true
             },
-            "CCUSTO": {
-                "desc": "CCUSTO",
-                "type": "varchar",
-                "selected": false
-            },
             "CODNATFINANCEIRA": {
                 "desc": "CODNATFINANCEIRA",
                 "type": "varchar",
