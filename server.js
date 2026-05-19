@@ -209,18 +209,13 @@ function getTableFriendlyDescription(tableName) {
         PSECAO: "Seções (Departamentos / Filiais)",
         PFUNCAO: "Funções e Cargos",
         PFPERFF: "Ficha Financeira (Período)",
-        PVALORES: "Ficha Financeira (Valores do Mês)",
-        PEVENTOS: "Eventos (Cadastro de Rubricas)",
         PFDEPEND: "Dependentes dos Funcionários",
         PFHSTSAL: "Histórico de Reajustes Salariais",
-        PFHSTAFDT: "Histórico de Afastamentos",
-        PFERIAS: "Histórico de Férias e Gozos",
         PFUFERIAS: "Períodos Aquisitivos de Férias",
         PFHSTHOR: "Histórico de Horários (Ponto)",
         AHORARIO: "Cadastro de Horários (Escalas)",
         ABATFUN: "Batidas Realizadas (Marcações)",
         AMOVFUN: "Movimento Apurado do Ponto",
-        ABANCOHORAS: "Histórico do Banco de Horas",
         AAFHTFUN: "Ficha de Ponto Diária Calculada",
         AAVISOCALCULADO: "Avisos e Críticas do Ponto",
         ABANCOHORFUN: "Movimento Banco de Horas (Detalhado)",
@@ -250,10 +245,9 @@ function getTableFriendlyDescription(tableName) {
 
 function getTablePriority(tableName) {
     const priorities = {
-        PFUNC: 10, PPERFF: 9, PPESSOA: 8, PSECAO: 7, PFUNCAO: 6,
-        PVALORES: 5, PEVENTOS: 4, PFHSTHOR: 4, AJORNADAFUN: 4,
-        PFDEPEND: 3, AHORARIO: 3, ABATFUN: 3, AMOVFUN: 3, ABANCOHORAS: 3, AAFHTFUN: 3, ABANCOHORFUN: 3, AMOVFUNDIA: 3, AHORARIOJORNADA: 3,
-        PFHSTSAL: 2, PFHSTAFDT: 2, PFERIAS: 2, PFUFERIAS: 2, AAVISOCALCULADO: 2, AJORHOR: 2, AOCORRENCIACALCULADA: 2,
+        PFUNC: 10, PPERFF: 9, PPESSOA: 8, PSECAO: 7, PFUNCAO: 6,PFHSTHOR: 4, AJORNADAFUN: 4,
+        PFDEPEND: 3, AHORARIO: 3, ABATFUN: 3, AMOVFUN: 3,AAFHTFUN: 3, ABANCOHORFUN: 3, AMOVFUNDIA: 3, AHORARIOJORNADA: 3,
+        PFHSTSAL: 2,PFUFERIAS: 2, AAVISOCALCULADO: 2, AJORHOR: 2, AOCORRENCIACALCULADA: 2,
         PSUBSTSUP: 1, PSUBSTCHEFE: 1,
         GCOLIGADA: 9, FCFO: 8, TMOV: 7, FLAN: 7, GCCUSTO: 6, TPRD: 6, PFHSTFER: 3, PFUFERIASRECIBO: 3, PFFINANC: 5, TITMMOV: 5
     };

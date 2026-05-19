@@ -82,33 +82,6 @@ const rmSchema = {
             SITUACAOFOLHA: { desc: "Situação da Folha", type: "smallint", selected: false }
         }
     },
-    PVALORES: {
-        code: "PVALORES",
-        desc: "Ficha Financeira (Valores do Mês)",
-        priority: 5,
-        fields: {
-            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
-            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
-            ANOCOMP: { desc: "Ano de Competência", type: "smallint", selected: false },
-            MESCOMP: { desc: "Mês de Competência", type: "smallint", selected: false },
-            NROPEDIDO: { desc: "Número do Pedido/Período", type: "smallint", selected: false },
-            CODEVENTO: { desc: "Código do Evento", type: "varchar", selected: true },
-            VALOR: { desc: "Valor Calculado (R$)", type: "numeric", selected: true },
-            REF: { desc: "Referência (Horas/Dias)", type: "numeric", selected: true }
-        }
-    },
-    PEVENTOS: {
-        code: "PEVENTOS",
-        desc: "Eventos (Cadastro de Rubricas)",
-        priority: 4,
-        fields: {
-            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
-            CODIGO: { desc: "Código do Evento", type: "varchar", selected: true },
-            DESCRICAO: { desc: "Nome do Evento", type: "varchar", selected: true },
-            PROVENTODESCONTO: { desc: "Natureza (P/D/B/I)", type: "char", selected: true },
-            VALORPADRAO: { desc: "Valor Padrão", type: "numeric", selected: false }
-        }
-    },
     PFDEPEND: {
         code: "PFDEPEND",
         desc: "Dependentes dos Funcionários",
@@ -136,32 +109,6 @@ const rmSchema = {
             SALARIO: { desc: "Salário Anterior/Novo", type: "numeric", selected: true },
             MOTIVO: { desc: "Motivo da Alteração", type: "varchar", selected: true },
             CODFUNCAO: { desc: "Código da Função", type: "varchar", selected: false }
-        }
-    },
-    PFHSTAFDT: {
-        code: "PFHSTAFDT",
-        desc: "Histórico de Afastamentos Temporários",
-        priority: 2,
-        fields: {
-            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
-            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
-            DTINICIO: { desc: "Data de Início do Afastamento", type: "datetime", selected: true },
-            DTFIM: { desc: "Data de Término do Afastamento", type: "datetime", selected: true },
-            TIPO: { desc: "Tipo do Afastamento", type: "char", selected: true },
-            MOTIVO: { desc: "Motivo do Afastamento", type: "varchar", selected: true }
-        }
-    },
-    PFERIAS: {
-        code: "PFERIAS",
-        desc: "Histórico de Férias e Gozos",
-        priority: 2,
-        fields: {
-            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
-            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
-            FIMPERAQUIS: { desc: "Fim do Período Aquisitivo", type: "datetime", selected: true },
-            INICIOGOZO: { desc: "Data de Início do Gozo", type: "datetime", selected: true },
-            FIMGOZO: { desc: "Data de Término do Gozo", type: "datetime", selected: true },
-            DIASGOZO: { desc: "Dias de Férias Gozados", type: "smallint", selected: true }
         }
     },
     PFUFERIAS: {
@@ -225,18 +172,6 @@ const rmSchema = {
             ATRASO: { desc: "Minutos de Atraso", type: "int", selected: true },
             EXTRA: { desc: "Minutos de Horas Extras", type: "int", selected: true },
             ADICIONAL: { desc: "Minutos de Adicional Noturno", type: "int", selected: false }
-        }
-    },
-    ABANCOHORAS: {
-        code: "ABANCOHORAS",
-        desc: "Histórico e Saldos do Banco de Horas",
-        priority: 3,
-        fields: {
-            CODCOLIGADA: { desc: "Código da Coligada", type: "smallint", selected: false },
-            CHAPA: { desc: "Chapa / Matrícula", type: "varchar", selected: false },
-            DATA: { desc: "Data do Lançamento", type: "datetime", selected: true },
-            SALDO: { desc: "Saldo do Período (Minutos)", type: "int", selected: true },
-            SALDOANTERIOR: { desc: "Saldo Anterior (Minutos)", type: "int", selected: false }
         }
     },
     AAFHTFUN: {
@@ -22775,25 +22710,6 @@ const sqlTemplates = [
         activeFilters: { active: true, coligada: true, chapa: false }
     },
     {
-        id: "folha-calculada",
-        title: "Folha Calculada (Ficha Financeira)",
-        desc: "Retorna os proventos e descontos gerados na folha de pagamento por funcionário para um período/competência específico.",
-        tables: ["PFUNC", "PPESSOA", "PFPERFF", "PVALORES", "PEVENTOS"],
-        selectedFields: {
-            PFUNC: ["CODCOLIGADA", "CHAPA"],
-            PPESSOA: ["NOME"],
-            PFPERFF: ["ANOCOMP", "MESCOMP"],
-            PVALORES: ["VALOR", "REF"],
-            PEVENTOS: ["CODIGO", "DESCRICAO", "PROVENTODESCONTO"]
-        },
-        filters: [
-            { table: "PFPERFF", field: "ANOCOMP", op: "=", value: "2026", type: "custom" },
-            { table: "PFPERFF", field: "MESCOMP", op: "=", value: "5", type: "custom" },
-            { table: "PEVENTOS", field: "PROVENTODESCONTO", op: "IN", value: "('P', 'D')", type: "custom" }
-        ],
-        activeFilters: { active: true, coligada: true, chapa: false }
-    },
-    {
         id: "admissoes-periodo",
         title: "Admissões no Período",
         desc: "Filtra novos contratados admitidos em um intervalo de datas. Excelente para relatórios de onboarding e auditoria.",
@@ -22866,40 +22782,6 @@ const sqlTemplates = [
         filters: [
             { table: "PFUNC", field: "CODSITUACAO", op: "<>", value: "'D'", type: "static" },
             { table: "PFUNC", field: "CODTIPO", op: "IN", value: "('E', 'A')", type: "custom" }
-        ],
-        activeFilters: { active: true, coligada: true, chapa: false }
-    },
-    {
-        id: "auditoria-bases",
-        title: "Bases de FGTS / INSS (Ficha Financeira)",
-        desc: "Relatório para auditar as verbas de natureza Base de Cálculo ('B') geradas no período para os funcionários.",
-        tables: ["PFUNC", "PPESSOA", "PFPERFF", "PVALORES", "PEVENTOS"],
-        selectedFields: {
-            PFUNC: ["CODCOLIGADA", "CHAPA"],
-            PPESSOA: ["NOME"],
-            PFPERFF: ["ANOCOMP", "MESCOMP"],
-            PVALORES: ["VALOR"],
-            PEVENTOS: ["CODIGO", "DESCRICAO", "PROVENTODESCONTO"]
-        },
-        filters: [
-            { table: "PFPERFF", field: "ANOCOMP", op: "=", value: "2026", type: "custom" },
-            { table: "PFPERFF", field: "MESCOMP", op: "=", value: "5", type: "custom" },
-            { table: "PEVENTOS", field: "PROVENTODESCONTO", op: "=", value: "'B'", type: "custom" }
-        ],
-        activeFilters: { active: true, coligada: true, chapa: false }
-    },
-    {
-        id: "historico-afastamentos",
-        title: "Histórico de Afastamentos Ativos",
-        desc: "Relação de todos os afastamentos ativos (sem data de término cadastrada) contendo chapa, nome e motivo do afastamento.",
-        tables: ["PFUNC", "PPESSOA", "PFHSTAFDT"],
-        selectedFields: {
-            PFUNC: ["CHAPA"],
-            PPESSOA: ["NOME"],
-            PFHSTAFDT: ["DTINICIO", "DTFIM", "TIPO", "MOTIVO"]
-        },
-        filters: [
-            { table: "PFHSTAFDT", field: "DTFIM", op: "IS NULL", value: "", type: "custom" }
         ],
         activeFilters: { active: true, coligada: true, chapa: false }
     },
@@ -23930,20 +23812,6 @@ function calculateJoins(baseTable, selectedTables) {
                 condition = "PFUNC.CODCOLIGADA = PFPERFF.CODCOLIGADA AND PFUNC.CHAPA = PFPERFF.CHAPA";
             }
         }
-        else if (table === "PVALORES") {
-            if (selectedTables.has("PFPERFF")) {
-                condition = "PFPERFF.CODCOLIGADA = PVALORES.CODCOLIGADA AND PFPERFF.CHAPA = PVALORES.CHAPA AND PFPERFF.ANOCOMP = PVALORES.ANOCOMP AND PFPERFF.MESCOMP = PVALORES.MESCOMP AND PFPERFF.NROPEDIDO = PVALORES.NROPEDIDO";
-            } else if (selectedTables.has("PFUNC")) {
-                condition = "PFUNC.CODCOLIGADA = PVALORES.CODCOLIGADA AND PFUNC.CHAPA = PVALORES.CHAPA";
-            }
-        }
-        else if (table === "PEVENTOS") {
-            if (selectedTables.has("PVALORES")) {
-                condition = "PVALORES.CODCOLIGADA = PEVENTOS.CODCOLIGADA AND PVALORES.CODEVENTO = PEVENTOS.CODIGO";
-            } else if (selectedTables.has("PFUNC")) {
-                condition = "PFUNC.CODCOLIGADA = PEVENTOS.CODCOLIGADA";
-            }
-        }
         else if (table === "PFDEPEND") {
             if (selectedTables.has("PFUNC")) {
                 condition = "PFUNC.CODCOLIGADA = PFDEPEND.CODCOLIGADA AND PFUNC.CHAPA = PFDEPEND.CHAPA";
@@ -23952,18 +23820,6 @@ function calculateJoins(baseTable, selectedTables) {
         else if (table === "PFHSTSAL") {
             if (selectedTables.has("PFUNC")) {
                 condition = "PFUNC.CODCOLIGADA = PFHSTSAL.CODCOLIGADA AND PFUNC.CHAPA = PFHSTSAL.CHAPA";
-            }
-        }
-        else if (table === "PFHSTAFDT") {
-            if (selectedTables.has("PFUNC")) {
-                condition = "PFUNC.CODCOLIGADA = PFHSTAFDT.CODCOLIGADA AND PFUNC.CHAPA = PFHSTAFDT.CHAPA";
-            }
-        }
-        else if (table === "PFERIAS") {
-            if (selectedTables.has("PFUFERIAS")) {
-                condition = "PFUFERIAS.CODCOLIGADA = PFERIAS.CODCOLIGADA AND PFUFERIAS.CHAPA = PFERIAS.CHAPA AND PFUFERIAS.FIMPERAQUIS = PFERIAS.FIMPERAQUIS";
-            } else if (selectedTables.has("PFUNC")) {
-                condition = "PFUNC.CODCOLIGADA = PFERIAS.CODCOLIGADA AND PFUNC.CHAPA = PFERIAS.CHAPA";
             }
         }
         else if (table === "PFUFERIAS") {
@@ -23991,11 +23847,6 @@ function calculateJoins(baseTable, selectedTables) {
         else if (table === "AMOVFUN") {
             if (selectedTables.has("PFUNC")) {
                 condition = "PFUNC.CODCOLIGADA = AMOVFUN.CODCOLIGADA AND PFUNC.CHAPA = AMOVFUN.CHAPA";
-            }
-        }
-        else if (table === "ABANCOHORAS") {
-            if (selectedTables.has("PFUNC")) {
-                condition = "PFUNC.CODCOLIGADA = ABANCOHORAS.CODCOLIGADA AND PFUNC.CHAPA = ABANCOHORAS.CHAPA";
             }
         }
         else if (table === "AAFHTFUN") {
