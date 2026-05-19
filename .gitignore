@@ -28,3 +28,10 @@ yarn-error.log*
 decompressed_model.xml
 *.ps1
 inspect_model.js
+
+# Huge TotvsSQL Models & Extracted XMLs
+*.TotvsSQL
+*.xml
+model_summary.json
+missing_table_schemas.json
+

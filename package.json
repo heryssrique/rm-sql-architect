@@ -1,0 +1,23 @@
+{
+  "name": "rm-sql-architect",
+  "version": "1.1.0",
+  "description": "Premium Interactive SQL Architect & Parser for TOTVS RM Labore",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "totvs",
+    "rm",
+    "labore",
+    "sql",
+    "architect"
+  ],
+  "author": "Antigravity",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mssql": "^10.0.2"
+  }
+}
