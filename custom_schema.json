@@ -1,0 +1,28 @@
+{
+  "PFVALORFORCADO": {
+    "code": "PFVALORFORCADO",
+    "desc": "Valores Forçados do Movimento",
+    "priority": 4,
+    "joinCondition": "PFUNC.CODCOLIGADA = PFVALORFORCADO.CODCOLIGADA AND PFUNC.CHAPA = PFVALORFORCADO.CHAPA",
+    "fields": {
+      "CODCOLIGADA": { "desc": "Coligada", "type": "smallint", "selected": false },
+      "CHAPA": { "desc": "Chapa", "type": "varchar", "selected": false },
+      "CODEVENTO": { "desc": "Codigo Evento", "type": "varchar", "selected": true },
+      "VALOR": { "desc": "Valor", "type": "numeric", "selected": true },
+      "NROPERIODO": { "desc": "Periodo", "type": "smallint", "selected": false },
+      "MESCOMP": { "desc": "Mes", "type": "smallint", "selected": false },
+      "ANOCOMP": { "desc": "Ano", "type": "smallint", "selected": false }
+    }
+  },
+  "PEVENTO": {
+    "code": "PEVENTO",
+    "desc": "Cadastro de Eventos",
+    "priority": 2,
+    "joinCondition": "PFUNC.CODCOLIGADA = PEVENTO.CODCOLIGADA AND PFVALORFORCADO.CODEVENTO = PEVENTO.CODIGO",
+    "fields": {
+      "CODCOLIGADA": { "desc": "Coligada", "type": "smallint", "selected": false },
+      "CODIGO": { "desc": "Codigo Evento", "type": "varchar", "selected": false },
+      "DESCRICAO": { "desc": "Descricao", "type": "varchar", "selected": true }
+    }
+  }
+}

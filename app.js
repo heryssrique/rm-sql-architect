@@ -4,6 +4,32 @@
 
 // 1. DATA SCHEMA FOR TOTVS RM LABORE
 const rmSchema = {
+    PFVALORFORCADO: {
+        code: "PFVALORFORCADO",
+        desc: "Valores Forcados do Movimento",
+        priority: 4,
+        joinCondition: "PFUNC.CODCOLIGADA = PFVALORFORCADO.CODCOLIGADA AND PFUNC.CHAPA = PFVALORFORCADO.CHAPA",
+        fields: {
+            CODCOLIGADA: { desc: "Coligada", type: "smallint", selected: false },
+            CHAPA: { desc: "Chapa", type: "varchar", selected: false },
+            CODEVENTO: { desc: "Codigo Evento", type: "varchar", selected: true },
+            VALOR: { desc: "Valor", type: "numeric", selected: true },
+            NROPERIODO: { desc: "Periodo", type: "smallint", selected: false },
+            MESCOMP: { desc: "Mes", type: "smallint", selected: false },
+            ANOCOMP: { desc: "Ano", type: "smallint", selected: false }
+        }
+    },
+    PEVENTO: {
+        code: "PEVENTO",
+        desc: "Cadastro de Eventos",
+        priority: 2,
+        joinCondition: "PFUNC.CODCOLIGADA = PEVENTO.CODCOLIGADA AND PFVALORFORCADO.CODEVENTO = PEVENTO.CODIGO",
+        fields: {
+            CODCOLIGADA: { desc: "Coligada", type: "smallint", selected: false },
+            CODIGO: { desc: "Codigo Evento", type: "varchar", selected: false },
+            DESCRICAO: { desc: "Descricao", type: "varchar", selected: true }
+        }
+    },
     PFUNC: {
         code: "PFUNC",
         desc: "Funcionários (Contratos)",
@@ -22577,6 +22603,58 @@ const rmSchema = {
 // 2. PRE-BUILT TEMPLATES LIBRARY
 const sqlTemplates = [
 {
+            "id": "pfvalorforcado-consulta",
+            "title": "Consulta Valor Forcado com Situacao Ativa",
+            "desc": "Consulta da tabela PFVALORFORCADO cruzando com funcionarios ativos e a descricao do evento.",
+            "tables": [
+                "PFVALORFORCADO",
+                "PFUNC",
+                "PEVENTO"
+            ],
+            "selectedFields": {
+                "PFVALORFORCADO": [
+                    "CODEVENTO",
+                    "VALOR"
+                ],
+                "PFUNC": [
+                    "CHAPA",
+                    "NOME"
+                ],
+                "PEVENTO": [
+                    "DESCRICAO"
+                ]
+            },
+            "filters": [
+                {
+                    "table": "PFVALORFORCADO",
+                    "field": "NROPERIODO",
+                    "op": "=",
+                    "value": "'1'",
+                    "type": "custom"
+                },
+                {
+                    "table": "PFVALORFORCADO",
+                    "field": "MESCOMP",
+                    "op": "=",
+                    "value": "'6'",
+                    "type": "custom"
+                },
+                {
+                    "table": "PFVALORFORCADO",
+                    "field": "ANOCOMP",
+                    "op": "=",
+                    "value": "'2026'",
+                    "type": "custom"
+                }
+            ],
+            "activeFilters": {
+                "active": true,
+                "coligada": false,
+                "chapa": false
+            },
+            "customSQL": "SELECT \n    V.CHAPA,\n    F.NOME,\n    V.CODEVENTO,\n    E.DESCRICAO AS DESCRICAO_EVENTO,\n    V.VALOR\nFROM PFVALORFORCADO V\nINNER JOIN PFUNC F \n    ON V.CODCOLIGADA = F.CODCOLIGADA \n    AND V.CHAPA = F.CHAPA\nINNER JOIN PEVENTO E\n    ON V.CODCOLIGADA = E.CODCOLIGADA\n    AND V.CODEVENTO = E.CODIGO\nWHERE V.CODCOLIGADA = 1\n  AND V.NROPERIODO = 1\n  AND V.MESCOMP = 6\n  AND V.ANOCOMP = 2026\n  AND F.CODSITUACAO = 'A';"
+        },
+{
             "id": "ferias-aquisitivo",
             "title": "Controle de Férias (Período Aquisitivo)",
             "desc": "Histórico detalhado do gozo de férias confrontado com o período aquisitivo correspondente. Excelente para controle de saldos.",
@@ -24132,7 +24210,7 @@ function loadTemplate(tpl) {
         activeTables.add(tKey);
         const selFields = tpl.selectedFields[tKey] || [];
         selFields.forEach(fKey => {
-            if (rmSchema[tKey].fields[fKey]) {
+            if (rmSchema[tKey] && rmSchema[tKey].fields && rmSchema[tKey].fields[fKey]) {
                 rmSchema[tKey].fields[fKey].selected = true;
             }
         });
