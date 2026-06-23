@@ -22838,51 +22838,77 @@ const sqlTemplates = [
         },
         {
             "id": "aniversariantes-mes",
-            "title": "Aniversariantes do Mês",
-            "desc": "Lista de funcionários aniversariantes do mês atual, com data de nascimento, seção e centro de custo associados.",
+            "title": "Aniversariantes do Mês — CLT",
+            "desc": "Lista de funcionários CLT ativos com data de nascimento, mês e dia de aniversário, seção, cargo e centro de custo. Filtrar pela coluna Mes_Aniversario para o mês desejado.",
             "tables": [
                 "PFUNC",
                 "PPESSOA",
                 "PSECAO",
+                "PFUNCAO",
                 "GCCUSTO"
             ],
             "selectedFields": {
-                "PFUNC": [
-                    "CODCOLIGADA",
-                    "NOME",
-                    "CODSITUACAO"
-                ],
-                "PPESSOA": [
-                    "DTNASCIMENTO"
-                ],
-                "PSECAO": [
-                    "DESCRICAO"
-                ],
-                "GCCUSTO": [
-                    "NOME"
-                ]
+                "PFUNC": [ "CODCOLIGADA", "CHAPA", "CODSITUACAO", "DATAADMISSAO" ],
+                "PPESSOA": [ "NOME", "CPF", "DTNASCIMENTO" ],
+                "PSECAO": [ "DESCRICAO" ],
+                "PFUNCAO": [ "NOME" ],
+                "GCCUSTO": [ "NOME" ]
             },
-            "filters": [
-                {
-                    "table": "PPESSOA",
-                    "field": "DTNASCIMENTO",
-                    "op": "=",
-                    "value": ":MES_S",
-                    "type": "static"
-                },
-                {
-                    "table": "PFUNC",
-                    "field": "CODSITUACAO",
-                    "op": "IN",
-                    "value": "('A','F','V','E')",
-                    "type": "static"
-                }
+            "filters": [],
+            "activeFilters": { "active": false, "coligada": true, "chapa": false },
+            customSQL: `SELECT P.NOME                AS Nome,
+       MONTH(P.DTNASCIMENTO) AS Mes_Aniversario,
+       DAY(P.DTNASCIMENTO)   AS Dia_Aniversario,
+       GCC.NOME              AS CentroCusto
+FROM   PFUNC F,
+       PPESSOA P,
+       PSECAO S,
+       PFUNCAO FN,
+       GCCUSTO GCC
+WHERE  F.CODPESSOA        = P.CODIGO
+  AND  F.CODCOLIGADA      = S.CODCOLIGADA
+  AND  F.CODSECAO         = S.CODIGO
+  AND  F.CODCOLIGADA      = FN.CODCOLIGADA
+  AND  F.CODFUNCAO        = FN.CODIGO
+  AND  S.CODCOLIGADA      = GCC.CODCOLIGADA
+  AND  S.NROCENCUSTOCONT  = GCC.CODCCUSTO
+  AND  F.CODSITUACAO     IN ('A', 'F', 'V', 'E')
+  AND  P.DTNASCIMENTO    IS NOT NULL`
+        },
+        {
+            "id": "aniversariantes-mes-pj",
+            "title": "Aniversariantes do Mês — PJ",
+            "desc": "Lista de contatos PJ aniversariantes com CNPJ do fornecedor, CPF do contato, data de nascimento, seção PJ e valor atual do contrato. Filtro pelo mês de aniversário via coluna MES_ANIVERSARIO.",
+            "tables": [
+                "FCFO",
+                "FCFOCOMPL",
+                "FCFOCONTATO",
+                "FCFOCONTATOCOMPL"
             ],
-            "activeFilters": {
-                "active": false,
-                "coligada": true,
-                "chapa": false
-            }
+            "selectedFields": {
+                "FCFO": [ "CODCOLIGADA", "CODCFO", "CGCCFO", "NOME" ],
+                "FCFOCOMPL": [ "PJDATAINICIO", "PJVALORATUAL", "SECAOPJ", "FOLHA" ],
+                "FCFOCONTATO": [ "NOME", "DATANASCIMENTO", "OBSERVACAO" ],
+                "FCFOCONTATOCOMPL": [ "CPF" ]
+            },
+            "filters": [],
+            "activeFilters": { "active": false, "coligada": true, "chapa": false },
+            customSQL: `SELECT ct.NOME                  AS Contato,
+       MONTH(ct.DATANASCIMENTO) AS Mes_Aniversario,
+       DAY(ct.DATANASCIMENTO)   AS Dia_Aniversario,
+       c.SECAOPJ                AS Secao_PJ
+FROM   FCFO F,
+       FCFOCOMPL c,
+       FCFOCONTATO ct,
+       FCFOCONTATOCOMPL ctc
+WHERE  ctc.CODCOLIGADA = ct.CODCOLIGADA
+  AND  ctc.CODCFO      = ct.CODCFO
+  AND  ct.CODCOLIGADA  = F.CODCOLIGADA
+  AND  ct.CODCFO       = F.CODCFO
+  AND  c.CODCOLIGADA   = F.CODCOLIGADA
+  AND  F.CODCFO        = c.CODCFO
+  AND  c.FOLHA         = 'T'
+  AND  ct.DATANASCIMENTO IS NOT NULL`
         },
         {
             "id": "custo-he",

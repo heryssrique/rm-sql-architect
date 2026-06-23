@@ -97,22 +97,42 @@ app.post('/api/execute', async (req, res) => {
     }
 
     try {
-        // Enforce safety limits by wrapping query or applying TOP if not present,
-        // or let the client-side define execution rows limit.
-        // We will execute a limited query (ex: TOP 200 rows) to protect memory and performance.
+        // Enforce safety limits — limit to TOP 200 rows to protect memory and performance.
         let safeQuery = query.trim();
         
-        // Strip ending semicolons for wrapper if any
+        // Strip trailing semicolons before wrapping
         if (safeQuery.endsWith(';')) {
             safeQuery = safeQuery.slice(0, -1);
         }
 
-        // We wrap it in a pagination/TOP limit CTE to make absolutely sure we don't return millions of rows
-        const wrappedQuery = `
-            SELECT TOP 200 * FROM (
-                ${safeQuery}
-            ) AS UserQuery
-        `;
+        // Determine wrapping strategy:
+        // - CTEs (WITH ...) cannot be placed inside a subquery directly because
+        //   ORDER BY inside a subquery without TOP is invalid in SQL Server.
+        //   For CTEs we append an outer SELECT TOP 200 after the CTE body.
+        // - Plain SELECT queries are wrapped normally.
+        let wrappedQuery;
+        const upperQuery = safeQuery.replace(/\/\*[\s\S]*?\*\//g, '').replace(/--[^\n]*/g, '').trimStart().toUpperCase();
+
+        if (upperQuery.startsWith('WITH ') || upperQuery.startsWith('WITH\n') || upperQuery.startsWith('WITH\r')) {
+            // CTE query: inject TOP into the final SELECT or wrap as an outer CTE reference
+            // Strategy: wrap the entire CTE in another CTE alias, then SELECT TOP 200 from it.
+            // SQL Server allows: WITH original AS (...), __limit AS (SELECT * FROM last_cte)
+            // Simpler: just replace the final SELECT * FROM <cte_name> with SELECT TOP 200 * FROM <cte_name>
+            // Most reliable: wrap the whole thing as a named CTE
+            wrappedQuery = `
+                WITH __user_cte AS (
+                    ${safeQuery}
+                )
+                SELECT TOP 200 * FROM __user_cte
+            `;
+        } else {
+            // Plain SELECT: safe to wrap in a subquery
+            wrappedQuery = `
+                SELECT TOP 200 * FROM (
+                    ${safeQuery}
+                ) AS UserQuery
+            `;
+        }
 
         console.log('Executing safe user query...');
         const result = await dbPool.request().query(wrappedQuery);
